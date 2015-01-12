@@ -1,4 +1,4 @@
-/* global console, $, jQuery */
+/* global console, $, jQuery, myContact, myContact2 */
 /* jshint eqnull:true */
 
 var ContactsLib = (function($) {
@@ -72,7 +72,7 @@ var ContactsLib = (function($) {
 			attr,
 			obj = {};
 
-		fieldsList = fieldsList == null ? fields : fieldsList;
+		fieldsList = (fieldsList == null) ? fields : fieldsList;
 
 		for (i = fieldsList.length; i >= 0; i--) {
 			if (fieldsList[i] != null) {
@@ -95,8 +95,8 @@ var ContactsLib = (function($) {
 				prefix: '',
 				number: ''
 			};
-		num.prefix = newstr.slice(0, this.PREFIX_LENGTH);
-		num.number = newstr.slice(this.PREFIX_LENGTH);
+		num.prefix = newstr.slice(0, this.PREFIX_LENGTH); //jshint ignore:line
+		num.number = newstr.slice(this.PREFIX_LENGTH);//jshint ignore:line
 		return num;
 	}
 
@@ -127,19 +127,56 @@ var ContactsLib = (function($) {
 	};
 
 	function ContactsBook(name) {
-		// TODO: remove mock data
-		this.lists = {
-			'somelist no. 1': [myContact, myContact2],
-			'somelist no. 2': [myContact, myContact2],
-			'somelist no. 3': [myContact, myContact2]
-		};
+		this.lists = {};
 		this.name = name;
-	};
+	}
+    
 	ContactsBook.getInstance = function(name) {
 		if (book == null) {
 			book = new ContactsBook(name);
 		}
 		return book;
+	};
+	/**
+	 * get the highest list's 'id' available
+	 * @return {[Number]}
+	 */
+	ContactsBook.prototype.getListId = function() {
+		var i,
+			num = 0,
+			lists = Object.keys(this.lists),
+			len = lists.length;
+
+		for(i=0; i<len; i++){
+			if(this.lists[lists[i]].id > num){
+				num = this.lists[lists[i]].id
+			}
+		}
+		return num;
+	};
+	/**
+	 * get the highest contact's 'id' available
+	 * @return {[Number]}
+	 */
+	ContactsBook.prototype.getContactId = function() {
+		var i,
+			num = 0,
+			lists = Object.keys(this.lists),
+			contacts,
+			k,
+			len = lists.length,
+			len2;
+
+		for(i=0; i<len; i++){
+			contacts = this.lists[lists[i]].contacts;
+			len2 = contacts.length;
+			for(k = 0; k < len2; k++){
+				if(contacts[k].id > num){
+					num = contacts[k].id;
+				}
+			}
+		}
+		return num;
 	};
 	/**
 	 * [get description]
@@ -158,9 +195,7 @@ var ContactsLib = (function($) {
 			delete this.lists[listName];
 			return;
 		} 
-		
 		console.warn('The list you have requested was not found.');
-		
 	};
 
 	ContactsBook.prototype.add = function(contactsList, override) {
@@ -183,19 +218,28 @@ var ContactsLib = (function($) {
 		this.lists[contactsList.name] = contactsList;
 	};
 
+	/**
+	 * Given a ContactsList name and Array of Contacts
+	 * we create a New ContactsList, OR - 
+	 * adding Contact to an existing list
+	 * @param  {[ContactsList]} name [pass a ContactsList name]
+	 * @param  {[Array]} 		arr  [pass an array of Contacts]
+	 * @return {[ContactsList]}      [Returning a list]
+	 */
 	ContactsBook.prototype.create = function(name, arr) {
 		if (this.get(name) !== null) {
-			throw "List already defined";
-			return false;
+			this.lists[name].contacts.push(arr);
+			console.info("List already defined, just adding contact.");
+		}else{		
+			this.lists[name] = new ContactsList(name, arr);
 		}
-		this.lists[name] = new ContactsList(name, arr);
 		return this.lists[name];
 	};
 
 	function Contact(data) {
 		var obj = _initProperties(data, fields);
 		_props(this, obj);
-	};
+	}
 
 	Contact.prototype.validate = function() {
 		var result          = [];
@@ -218,7 +262,7 @@ var ContactsLib = (function($) {
 		_props(this, obj);
 
 		Contact.call(this, data);
-	};
+	}
 
 	_inherit(WorkContact, Contact);
 
@@ -237,7 +281,7 @@ var ContactsLib = (function($) {
 				}
 			}
 		});
-	};
+	}
 
 	PhoneNumber.parse = function(phoneString) {
 		var num = _parseNumber.call(this, phoneString);
@@ -248,7 +292,7 @@ var ContactsLib = (function($) {
 
 	function MobilePhoneNumber(prefix, number) {
 		PhoneNumber.call(this, prefix, number);
-	};
+	}
 
 	_inherit(MobilePhoneNumber, PhoneNumber);
 
@@ -259,10 +303,11 @@ var ContactsLib = (function($) {
 
 	MobilePhoneNumber.PREFIX_LENGTH = 3;
 
-	function ContactsList(name, contacts) {
+	function ContactsList(name, contacts, id) {
 		this.name = name;
 		this.contacts = (contacts instanceof Array) ? contacts : [];
-	};
+        this.id = id || "";
+	}
 	
 	ContactsList.prototype.filter = function(callback) {
 		var i, 
@@ -280,8 +325,9 @@ var ContactsLib = (function($) {
 		len = this.contacts.length, 
 		result = [];
 		for (i = 0; i < len; i++) {
-			if (!callback(this.contacts[i], i, this)) {
+			if (callback(this.contacts[i], i, this)) {
 				result.push(this.contacts[i]);
+                this.contacts.slice(i, i + 1);
 			}
 		}
 		return result;
