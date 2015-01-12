@@ -1,0 +1,26 @@
+{
+  "name": "contacts",
+  "version": "0.0.1",
+  "authors": [
+    "Natanel Havakuk"
+  ],
+  "description": "Manage contacts repository",
+  "main": "index.html",
+  "keywords": [
+    "contacts",
+    "lib"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.1",
+    "bootstrap-sass-official": "~3.3.1",
+    "jquery-ui": "~1.11.2"
+  }
+}
