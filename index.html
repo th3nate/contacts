@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>My Contacts</title>
+		<!-- Bootstrap core CSS -->
+		<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+		<!-- Bootstrap theme -->
+		<link href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+		<!-- jQuery-ui theme -->
+		<link href="bower_components/jquery-ui/themes/redmond/jquery-ui.min.css" rel="stylesheet">
+		<!-- START Custom styles for this template (COMPASS SASS) -->
+		<link href="stylesheets/print.css" media="print" rel="stylesheet" type="text/css" />
+		<link href="stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
+		<!--[if IE]>
+		<link href="stylesheets/ie.css" media="screen, projection" rel="stylesheet" type="text/css" />
+		<![endif]-->
+		<!-- END Custom styles for this template (COMPASS SASS) -->
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body role="document">
+		<!-- Fixed navbar -->
+		<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">My Contacts</a>
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="#">Home</a></li>
+						<li><a href="#about">About</a></li>
+						<li><a href="#contact">Contact</a></li>
+					</ul>
+				</div><!--/.nav-collapse -->
+			</div>
+		</nav>
+
+		<div id="layout" class="container" role="main">
+
+			<!-- Main jumbotron for a primary marketing message or call to action -->
+			<div class="jumbotron">
+				<p>
+					Available groups:<br />
+					<span class="label label-primary">Friends</span>
+					<span class="label label-success">Family</span>
+					<span class="label label-info">Work Colleagues</span>
+					<span class="label label-warning">Some group</span>
+					<span class="label label-danger">Some group</span>
+					<span class="label label-default">User group</span>
+				</p>
+				<p>
+					<a href="#" class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#contact-modal">New Contact &raquo;</a>
+					<a href="#" id="get-checked-data" class="btn btn-primary btn-lg" role="button">Get Selected &raquo;</a>
+				</p>
+			</div>
+
+			<!--div class="row" data-role="wrapper">
+
+				<div class="col-xs-12 col-sm-4 col-md-4">
+					<div data-group="friends" class="thumbnail contact-item relative">
+						<div class="col-xs-4 col-sm-6 col-md-6">
+							<img src="http://api.randomuser.me/portraits/men/49.jpg" alt="Scott Stevens" class="img-responsive img-circle" />
+						</div>
+						<div class="col-xs-8 col-sm-6 col-md-6">
+							<h4 class="name">Scott Stevens</h4>
+
+							<span class="glyphicon glyphicon-envelope text-muted c-info" data-toggle="tooltip" title="scott.stevens@example.com"></span>
+							<span class="visible-xs"><span class="text-muted">scott.stevens@example.com</span><br /></span>
+							<span class="glyphicon glyphicon-phone text-muted c-info" data-toggle="tooltip" title="(870) 288-4149"></span>
+							<span class="visible-xs"><span class="text-muted">(870) 288-4149</span><br /></span>
+							<span class="glyphicon glyphicon-gift text-muted c-info" data-toggle="tooltip" title="04/12/1978"></span>
+							<span class="visible-xs"><span class="text-muted">04/12/1978</span><br /></span>
+							<span class="glyphicon glyphicon-earphone text-muted c-info" data-toggle="tooltip" title="(870) 288-4149"></span>
+							<span class="visible-xs"><span class="text-muted">(870) 288-4149</span><br /></span>
+							<span class="glyphicon glyphicon-briefcase text-muted c-info" data-toggle="tooltip" title="(870) 288-4149"></span>
+							<span class="visible-xs"><span class="text-muted">(870) 288-4149</span><br /></span>
+							<a href="http://facebook.com"><span class="glyphicon glyphicon-link text-muted c-info" data-toggle="tooltip" title="See my FB page"></span>
+							<span class="visible-xs"><span class="text-muted break-word">See my FB page</span></span></a>
+							<br />
+							<a data-toggle="collapse" href="#collapse-1" aria-expanded="false" aria-controls="collapse-1">Show more</a>
+							<div class="collapse" id="collapse-1">
+								<span class="glyphicon glyphicon-comment text-muted c-info" data-toggle="tooltip" title="I'm a nice guy"></span>
+								<span class="visible-xs"><span class="text-muted break-word">I'm a nice guy</span><br /></span>
+							</div>
+
+						</div>
+						<a href="#" class="edit-contact" data-cid="1" data-tooltip="true" title="Edit contact" data-toggle="modal" data-target="#contact-modal"><span class="pos-icon-top glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+						<input type="checkbox">
+						<div class="clearfix"></div>
+					</div>
+				</div>
+
+				<div class="col-xs-12 col-sm-4 col-md-4">
+					<div class="thumbnail contact-item relative">
+						<div class="col-xs-4 col-sm-6 col-md-6">
+							<img src="http://api.randomuser.me/portraits/women/76.jpg" alt="Glenda Patterson" class="img-responsive img-circle" />
+						</div>
+						<div class="col-xs-8 col-sm-6 col-md-6">
+							<h4 class="name">Glenda Patterson</h4>
+							<span class="glyphicon glyphicon-map-marker text-muted c-info" data-toggle="tooltip" title="5842 Hillcrest Rd"></span>
+							<span class="visible-xs"> <span class="text-muted">5842 Hillcrest Rd</span><br/></span>
+							<span class="glyphicon glyphicon-earphone text-muted c-info" data-toggle="tooltip" title="(870) 288-4149"></span>
+							<span class="visible-xs"> <span class="text-muted">(870) 288-4149</span><br/></span>
+							<span class="fa fa-comments text-muted c-info" data-toggle="tooltip" title="scott.stevens@example.com"></span>
+							<span class="visible-xs"> <span class="text-muted">scott.stevens@example.com</span><br/></span>
+						</div>
+						<a href="#" class="edit-contact" data-cid="2" data-tooltip="true" title="Edit contact" data-toggle="modal" data-target="#contact-modal"><span class="pos-icon-top glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+						<input type="checkbox">
+						<div class="clearfix"></div>
+					</div>
+				</div>
+
+				<div class="col-xs-12 col-sm-4 col-md-4">
+					<div class="thumbnail contact-item relative">
+						<div class="col-xs-4 col-sm-6 col-md-6">
+							<img src="http://api.randomuser.me/portraits/women/56.jpg" alt="Debbie Schmidt" class="img-responsive img-circle" />
+						</div>
+						<div class="col-xs-8 col-sm-6 col-md-6">
+							<h4 class="name">Debbie Schmidt</h4>
+							<span class="glyphicon glyphicon-map-marker text-muted c-info" data-toggle="tooltip" title="5842 Hillcrest Rd"></span>
+							<span class="visible-xs"> <span class="text-muted">5842 Hillcrest Rd</span><br/></span>
+							<span class="glyphicon glyphicon-earphone text-muted c-info" data-toggle="tooltip" title="(870) 288-4149"></span>
+							<span class="visible-xs"> <span class="text-muted">(870) 288-4149</span><br/></span>
+							<span class="fa fa-comments text-muted c-info" data-toggle="tooltip" title="scott.stevens@example.com"></span>
+							<span class="visible-xs"> <span class="text-muted">scott.stevens@example.com</span><br/></span>
+						</div>
+						<a href="#" class="edit-contact" data-cid="3" data-tooltip="true" title="Edit contact" data-toggle="modal" data-target="#contact-modal"><span class="pos-icon-top glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+						<input type="checkbox">
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row" data-role="wrapper">
+				<div class="col-xs-12 col-sm-4 col-md-4">
+					<div class="thumbnail contact-item relative">
+						<div class="col-xs-4 col-sm-6 col-md-6">
+							<img src="http://api.randomuser.me/portraits/women/90.jpg" alt="Jean Myers" class="img-responsive img-circle" />
+						</div>
+						<div class="col-xs-8 col-sm-6 col-md-6">
+							<h4 class="name">Jean Myers</h4>
+							<span class="glyphicon glyphicon-map-marker text-muted c-info" data-toggle="tooltip" title="5842 Hillcrest Rd"></span>
+							<span class="visible-xs"> <span class="text-muted">5842 Hillcrest Rd</span><br/></span>
+							<span class="glyphicon glyphicon-earphone text-muted c-info" data-toggle="tooltip" title="(870) 288-4149"></span>
+							<span class="visible-xs"> <span class="text-muted">(870) 288-4149</span><br/></span>
+							<span class="fa fa-comments text-muted c-info" data-toggle="tooltip" title="scott.stevens@example.com"></span>
+							<span class="visible-xs"> <span class="text-muted">scott.stevens@example.com</span><br/></span>
+						</div>
+						<a href="#" class="edit-contact" data-cid="4" data-tooltip="true" title="Edit contact" data-toggle="modal" data-target="#contact-modal"><span class="pos-icon-top glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+						<input type="checkbox">
+						<div class="clearfix"></div>
+					</div>
+				</div>
+
+				<div class="col-xs-12 col-sm-4 col-md-4">
+					<div class="thumbnail contact-item relative">
+						<div class="col-xs-4 col-sm-6 col-md-6">
+							<img src="http://api.randomuser.me/portraits/men/97.jpg" alt="Seth Frazier" class="img-responsive img-circle" />
+						</div>
+						<div class="col-xs-8 col-sm-6 col-md-6">
+							<h4 class="name">Seth Frazier</h4>
+							<span class="glyphicon glyphicon-map-marker text-muted c-info" data-toggle="tooltip" title="5842 Hillcrest Rd"></span>
+							<span class="visible-xs"> <span class="text-muted">5842 Hillcrest Rd</span><br/></span>
+							<span class="glyphicon glyphicon-earphone text-muted c-info" data-toggle="tooltip" title="(870) 288-4149"></span>
+							<span class="visible-xs"> <span class="text-muted">(870) 288-4149</span><br/></span>
+							<span class="fa fa-comments text-muted c-info" data-toggle="tooltip" title="scott.stevens@example.com"></span>
+							<span class="visible-xs"> <span class="text-muted">scott.stevens@example.com</span><br/></span>
+						</div>
+						<a href="#" class="edit-contact" data-cid="5" data-tooltip="true" title="Edit contact" data-toggle="modal" data-target="#contact-modal"><span class="pos-icon-top glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+						<input type="checkbox">
+						<div class="clearfix"></div>
+					</div>
+				</div>
+
+				<div class="col-xs-12 col-sm-4 col-md-4">
+					<div class="thumbnail contact-item relative">
+						<div class="col-xs-4 col-sm-6 col-md-6">
+							<img src="http://api.randomuser.me/portraits/men/24.jpg" alt="Todd Shelton" class="img-responsive img-circle" />
+						</div>
+						<div class="col-xs-8 col-sm-6 col-md-6">
+							<h4 class="name">Scott Stevens</h4>
+							<span class="glyphicon glyphicon-map-marker text-muted c-info" data-toggle="tooltip" title="5842 Hillcrest Rd"></span>
+							<span class="visible-xs"> <span class="text-muted">5842 Hillcrest Rd</span><br/></span>
+							<span class="glyphicon glyphicon-earphone text-muted c-info" data-toggle="tooltip" title="(870) 288-4149"></span>
+							<span class="visible-xs"> <span class="text-muted">(870) 288-4149</span><br/></span>
+							<span class="fa fa-comments text-muted c-info" data-toggle="tooltip" title="scott.stevens@example.com"></span>
+							<span class="visible-xs"> <span class="text-muted">scott.stevens@example.com</span><br/></span>
+						</div>
+						<a href="#" class="edit-contact" data-cid="6" data-tooltip="true" title="Edit contact" data-toggle="modal" data-target="#contact-modal"><span class="pos-icon-top glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+						<input type="checkbox">
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div-->
+
+			<div id="layout_footer"></div>
+		</div> <!-- /container -->
+
+		<!-- Modal -->
+		<div class="modal fade" id="contact-modal" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-body">
+						<form id="contact-form" role="form" method="post">
+
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+							<h2 id="modal-title">Please Add Contact <small>It's free and always will be.</small></h2>
+
+							<hr class="colorgraph">
+
+							<div class="row">
+								<div class="col-xs-12 col-sm-6 col-md-6">
+									<div class="form-group">
+										<input type="text" name="firstName" id="first-name" class="form-control input-lg" placeholder="First Name" tabindex="1">
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6 col-md-6">
+									<div class="form-group">
+										<input type="text" name="lastName" id="last-name" class="form-control input-lg" placeholder="Last Name" tabindex="2">
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-xs-12 col-sm-6 col-md-6">
+									<div class="form-group">
+										<div class="input-group">
+											<span class="input-group-addon"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></span>
+											<input type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address" tabindex="3">
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6 col-md-6">
+									<div class="form-group">
+										<div class="input-group">
+											<span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
+											<input type="text" name="birthDate" id="birth-date" class="form-control input-lg" placeholder="Birth Date" tabindex="4">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-xs-12 col-sm-4 col-md-4">
+									<div class="form-group">
+										<div class="input-group">
+											<span class="input-group-addon"><span class="glyphicon glyphicon-earphone" aria-hidden="true"></span></span>
+											<input type="text" name="phone" id="phone" class="form-control input-lg" placeholder="Phone" tabindex="5">
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-4 col-md-4">
+									<div class="form-group">
+										<div class="input-group">
+											<span class="input-group-addon"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span></span>
+											<input type="text" name="workPhone" id="work-phone" class="form-control input-lg" placeholder="Work Phone" tabindex="6">
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-4 col-md-4">
+									<div class="form-group">
+										<div class="input-group">
+											<span class="input-group-addon"><span class="glyphicon glyphicon-phone" aria-hidden="true"></span></span>
+											<input type="text" name="mobile" id="mobile" class="form-control input-lg" placeholder="Mobile" tabindex="7">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-xs-12 col-sm-6 col-md-6">
+									<div class="form-group">
+										<div class="input-group">
+											<span class="input-group-addon"><span class="glyphicon glyphicon-link" aria-hidden="true"></span></span>
+											<input type="text" name="imageUrl" id="image-url" class="form-control input-lg" placeholder="Image URL" tabindex="8">
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6 col-md-6">
+									<div class="form-group">
+										<div class="input-group">
+											<span class="input-group-addon"><span class="glyphicon glyphicon-link" aria-hidden="true"></span></span>
+											<input type="text" name="facebookPage" id="facebook-page" class="form-control input-lg" placeholder="FB URL" tabindex="9">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<textarea name="comments" id="comments" class="form-control input-lg" rows="5" placeholder="Enter Comment" tabindex="10"></textarea>
+							</div>
+
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="isWorkContact" id="is-work-contact" tabindex="11"> Work contact?
+								</label>
+							</div>
+
+							<div class="form-group">
+								<div class="input-group">
+									<span class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
+									<select name="groupAssign" id="group-assign" class="form-control input-lg group-select" tabindex="12">
+										<option value="">Assaign to group:</option>
+										<option value="l1">Friends</option>
+										<option value="l2">Family</option>
+										<option value="l3">Work Colleagues</option>
+										<option value="l4">Some group 1</option>
+										<option value="l5">Some group 2</option>
+										<option value="user">Add a new group...</option>
+									</select>
+								</div>
+							</div>
+							<hr class="colorgraph">
+
+							<div class="row">
+								<div class="col-xs-12 col-md-6"><input type="submit" value="Apply" class="btn btn-success btn-block btn-lg" tabindex="13"></div>
+								<div class="col-xs-12 col-md-6"><a href="#" class="btn btn-primary btn-block btn-lg" data-dismiss="modal" tabindex="14">Cancel</a></div>
+							</div>
+
+							<input type="hidden" name="id" id="id" value="1" />
+
+						</form>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+		<div id="footer" class="colorgraph"></div>
+		<!-- Bootstrap core JavaScript
+		================================================== -->
+		<script src="bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+		<!-- jQuery UI -->
+		<script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+		<script src="js/ie10-viewport-bug-workaround.js"></script>
+		<!-- Contacts library -->
+		<script src="js/lib/contacts.js"></script>
+		<!-- Init -->
+		<script src="js/scraps.js"></script>
+		<script src="js/app.js"></script>
+	</body>
+</html>

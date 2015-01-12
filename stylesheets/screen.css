@@ -1,0 +1,218 @@
+/*
+$debug-browser-support: true;
+$browser-minimum-versions: (
+  "ie": "6",
+  "safari": "4"
+);
+*/
+/*======================================================
+  START Layout Styles
+  ======================================================*/
+/* line 6, ../scss/screen.scss */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0; }
+
+/* line 11, ../scss/screen.scss */
+body {
+  padding-top: 70px; }
+
+/* line 16, ../scss/screen.scss */
+#layout {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: -5px auto; }
+
+/* line 22, ../scss/screen.scss */
+#layout_footer, #footer {
+  height: 5px;
+  clear: both; }
+
+/* line 26, ../scss/screen.scss */
+#footer {
+  position: relative;
+  left: 0;
+  bottom: -5px;
+  width: 100%;
+  border-radius: 0px; }
+
+/* line 35, ../scss/screen.scss */
+.relative {
+  position: relative; }
+
+/* line 38, ../scss/screen.scss */
+.break-word {
+  word-wrap: break-word; }
+
+/* line 41, ../scss/screen.scss */
+.theme-dropdown .dropdown-menu {
+  position: static;
+  display: block;
+  margin-bottom: 20px; }
+
+/* line 46, ../scss/screen.scss */
+.theme-showcase > p > .btn {
+  margin: 5px 0; }
+
+/* line 49, ../scss/screen.scss */
+.theme-showcase .navbar .container {
+  width: auto; }
+
+/*======================================================
+  END Layout Styles
+  ======================================================*/
+/*======================================================
+  START Contacts List
+  ======================================================*/
+@media (max-width: 767px) {
+  /* line 61, ../scss/screen.scss */
+  .visible-xs {
+    display: inline-block !important; }
+
+  /* line 64, ../scss/screen.scss */
+  .block {
+    display: block !important;
+    width: 100%;
+    height: 1px !important; } }
+/* line 69, ../scss/screen.scss */
+.c-search > .form-control {
+  border-radius: 0;
+  border-width: 0;
+  border-bottom-width: 1px;
+  font-size: 1.3em;
+  padding: 12px 12px;
+  height: 44px;
+  outline: none !important; }
+
+/* line 78, ../scss/screen.scss */
+.c-search > .form-control:focus {
+  outline: 0 !important;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  box-shadow: "none"; }
+
+/* line 85, ../scss/screen.scss */
+.c-search > .input-group-btn .btn {
+  border-radius: 0px;
+  border-width: 0;
+  border-left-width: 1px;
+  border-bottom-width: 1px;
+  height: 44px; }
+
+/* line 92, ../scss/screen.scss */
+.c-list {
+  padding: 0;
+  min-height: 44px; }
+
+/* line 96, ../scss/screen.scss */
+.title {
+  display: inline-block;
+  font-size: 1.7em;
+  font-weight: bold;
+  padding: 5px 15px; }
+
+/* line 102, ../scss/screen.scss */
+ul.c-controls {
+  list-style: none;
+  margin: 0;
+  min-height: 44px; }
+  /* line 107, ../scss/screen.scss */
+  ul.c-controls li {
+    margin-top: 8px;
+    float: left; }
+    /* line 111, ../scss/screen.scss */
+    ul.c-controls li a {
+      font-size: 1.7em;
+      padding: 11px 10px 6px; }
+      /* line 115, ../scss/screen.scss */
+      ul.c-controls li a:hover, ul.c-controls li a:focus {
+        background-color: rgba(51, 51, 51, 0.2); }
+    /* line 120, ../scss/screen.scss */
+    ul.c-controls li i {
+      min-width: 24px;
+      text-align: center; }
+
+/* line 126, ../scss/screen.scss */
+.c-toggle {
+  font-size: 1.7em; }
+
+/* line 129, ../scss/screen.scss */
+.name {
+  font-size: 1.5em;
+  font-weight: 200; }
+
+/* line 133, ../scss/screen.scss */
+.c-info {
+  padding: 5px 10px;
+  font-size: 1.25em; }
+
+/* line 137, ../scss/screen.scss */
+div[data-group='l1'] {
+  border-left: 3px solid #337ab7; }
+
+/* line 139, ../scss/screen.scss */
+div[data-group='l2'] {
+  border-left: 3px solid #5cb85c; }
+
+/* line 141, ../scss/screen.scss */
+div[data-group='l3'] {
+  border-left: 3px solid #5bc0de; }
+
+/* line 143, ../scss/screen.scss */
+div[data-group='l4'] {
+  border-left: 3px solid #f0ad4e; }
+
+/* line 145, ../scss/screen.scss */
+div[data-group='l5'] {
+  border-left: 3px solid #d9534f; }
+
+/* line 147, ../scss/screen.scss */
+div[data-group='user'] {
+  border-left: 3px solid #777777; }
+
+/* line 150, ../scss/screen.scss */
+.colorgraph {
+  height: 5px;
+  border-top: 0;
+  background: #c4e17f;
+  border-radius: 5px;
+  background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuMCIgeTE9IjAuNSIgeDI9IjEuMCIgeTI9IjAuNSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2M0ZTE3ZiIvPjxzdG9wIG9mZnNldD0iMTIuNSUiIHN0b3AtY29sb3I9IiNjNGUxN2YiLz48c3RvcCBvZmZzZXQ9IjEyLjUlIiBzdG9wLWNvbG9yPSIjZjdmZGNhIi8+PHN0b3Agb2Zmc2V0PSIyNSUiIHN0b3AtY29sb3I9IiNmN2ZkY2EiLz48c3RvcCBvZmZzZXQ9IjI1JSIgc3RvcC1jb2xvcj0iI2ZlY2Y3MSIvPjxzdG9wIG9mZnNldD0iMzcuNSUiIHN0b3AtY29sb3I9IiNmZWNmNzEiLz48c3RvcCBvZmZzZXQ9IjM3LjUlIiBzdG9wLWNvbG9yPSIjZjA3NzZjIi8+PHN0b3Agb2Zmc2V0PSI1MCUiIHN0b3AtY29sb3I9IiNmMDc3NmMiLz48c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iI2RiOWRiZSIvPjxzdG9wIG9mZnNldD0iNjIuNSUiIHN0b3AtY29sb3I9IiNkYjlkYmUiLz48c3RvcCBvZmZzZXQ9IjYyLjUlIiBzdG9wLWNvbG9yPSIjYzQ5Y2RlIi8+PHN0b3Agb2Zmc2V0PSI3NSUiIHN0b3AtY29sb3I9IiNjNDljZGUiLz48c3RvcCBvZmZzZXQ9Ijc1JSIgc3RvcC1jb2xvcj0iIzY2OWFlMSIvPjxzdG9wIG9mZnNldD0iODcuNSUiIHN0b3AtY29sb3I9IiM2NjlhZTEiLz48c3RvcCBvZmZzZXQ9Ijg3LjUlIiBzdG9wLWNvbG9yPSIjNjJjMmU0Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjNjJjMmU0Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIgLz48L3N2Zz4g');
+  background-size: 100%;
+  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, #c4e17f), color-stop(12.5%, #c4e17f), color-stop(12.5%, #f7fdca), color-stop(25%, #f7fdca), color-stop(25%, #fecf71), color-stop(37.5%, #fecf71), color-stop(37.5%, #f0776c), color-stop(50%, #f0776c), color-stop(50%, #db9dbe), color-stop(62.5%, #db9dbe), color-stop(62.5%, #c49cde), color-stop(75%, #c49cde), color-stop(75%, #669ae1), color-stop(87.5%, #669ae1), color-stop(87.5%, #62c2e4), color-stop(100%, #62c2e4));
+  background-image: -webkit-linear-gradient(left, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4);
+  background-image: linear-gradient(to right, #c4e17f, #c4e17f 12.5%, #f7fdca 12.5%, #f7fdca 25%, #fecf71 25%, #fecf71 37.5%, #f0776c 37.5%, #f0776c 50%, #db9dbe 50%, #db9dbe 62.5%, #c49cde 62.5%, #c49cde 75%, #669ae1 75%, #669ae1 87.5%, #62c2e4 87.5%, #62c2e4); }
+
+/* line 161, ../scss/screen.scss */
+.pos-icon, .pos-icon-top {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 100; }
+
+/* line 167, ../scss/screen.scss */
+.pos-icon-top {
+  right: 5px;
+  left: auto; }
+
+/* line 174, ../scss/screen.scss */
+.contact-item input[type="radio"], .contact-item input[type="checkbox"] {
+  display: none; }
+
+/* line 179, ../scss/screen.scss */
+.contact-item .state-icon {
+  cursor: pointer; }
+
+/* line 182, ../scss/screen.scss */
+.comments {
+  margin: 10px 0px 0px;
+  display: block; }
+
+/* line 186, ../scss/screen.scss */
+.ui-datepicker {
+  z-index: 1000000 !important; }
+
+/*======================================================
+	END Contacts List
+	======================================================*/
