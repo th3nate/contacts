@@ -154,6 +154,33 @@ var ContactsLib = (function($) {
 		}
 		return num;
 	};
+
+	/**
+	 * [Retrieve a specific contact by its 'id' property]
+	 * @param  {[Number]} id [...]
+	 * @return {[Contact]}   [Returns the desired contact]
+	 */
+	ContactsBook.prototype.getContact = function(id){
+		var i,
+			contact = {},
+			lists = Object.keys(this.lists),
+			contacts,
+			k,
+			len = lists.length,
+			len2;
+
+		for(i=0; i<len; i++){
+			contacts = this.lists[lists[i]].contacts;
+			len2 = contacts.length;
+			for(k = 0; k < len2; k++){
+				if(contacts[k].id === id){
+					contact = contacts[k];
+				}
+			}
+		}
+		return contact;
+	}
+
 	/**
 	 * get the highest contact's 'id' available
 	 * @return {[Number]}
@@ -178,6 +205,30 @@ var ContactsLib = (function($) {
 		}
 		return num;
 	};
+	/**
+	 * [Init all available contacts inside a book]
+	 * @return {[Array]} [returns array with all contacts no matter in which list.]
+	 */
+	ContactsBook.prototype.initContacts = function(){
+		var 
+			i,
+			arr = [],
+			lists = Object.keys(this.lists),
+			contacts,
+			k,
+			len = lists.length,
+			len2;
+
+		for(i=0; i<len; i++){
+			contacts = this.lists[lists[i]].contacts;
+			len2 = contacts.length;
+			for(k = 0; k < len2; k++){
+				arr.push(contacts[k]);
+			}
+		}
+		return arr;
+	}
+
 	/**
 	 * [get description]
 	 * @param  {[type]}
