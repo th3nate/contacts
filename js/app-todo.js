@@ -1,8 +1,3 @@
-function drawContacts() {
-
-
-}
-
 /**
  * Build a select element form available 
  * lists in ContactsBook
@@ -43,14 +38,14 @@ function buildContactsListsSelect ($select, book){
 
 /**
  * Create Contact DOM widget
- * @param  {Contact}  contact       [The Contact to draw]
- * @param  {ContactsList}  list          [The List in which the contact is at]
- * @param  {Boolean} isWorkContact [description]
- * @return {[type]}                [description]
+ * @param  {Contact}  		contact      	[The Contact to draw]
+ * @param  {ContactsBook}  	list    		[The Book in which the contact is at]
+ * @return {[type]}                			[Returns a string of HTML]
  */
-function createContactWidget(contact, list, isWorkContact){
+function createContactWidget(contact, book){
 
-	var contact = list.find(contact.id),
+	var contact = book.getContact(contact.id),
+		isWorkContact = (contact.constructor.name === "WorkContact") ? true : false,		
 		item    = '\
 		<div class="col-xs-12 col-sm-4 col-md-4 contact-item-wrapper">\
 			<div data-group="'+contact.cssClass+'" class="thumbnail contact-item relative">\
@@ -98,3 +93,41 @@ function createContactWidget(contact, list, isWorkContact){
 	return item;
 }
 
+/**
+ * Build all available contacts
+ * @param  {ContactsBook}	book  [The Contacts available inside the book]
+ * @return {[String]}             [Returns a string of HTML]
+ */
+function drawContacts(book){
+	var
+		contacts = book.initContacts(),
+		i,
+		contactHTML,
+		isWorkContact,
+		len = contacts.length;
+
+	for(i = 0; i < len; i++){
+		isWorkContact = (contacts[i].constructor.name === "WorkContact") ? true : false;
+		contactHTML   = createContactWidget(contacts[i], book, isWorkContact);
+		arrangeContactsDom(contactHTML);
+	}
+}
+
+/**
+ * Takes a createContactWidget Output and 
+ * arrange it inside a given container
+ * @param  {[String]} contact    [description]
+ * @param  {[jQuery]} $container [if nothing passes to the function there's a fallback to default]
+ * @param  {[jQuery]} $row       [if nothing passes to the function there's a fallback to default]
+ * @return {[HTML]}            	 [Arranges the contact inside a given container]
+ */
+function arrangeContactsDom(contact, $container, $row){
+	$container = ($container === undefined) ? $container = $("#contacts") : $container;
+	$row 	   = ($row === undefined) ? $row = $("div[data-role='wrapper']") : $row;
+
+	if($row.last().length > 0 && $row.last().children().length < 3){ // If row exists on page and items in it does not exceed 3
+		$container.find($row.last()).append(contact);
+	}else{ // If row doesn't exists on page OR items in row exceed 3
+		$container.append('<div class="row" data-role="wrapper">'+contact+'</div>');
+	}
+}
