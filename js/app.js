@@ -181,6 +181,11 @@ $(function () {
 	/////////////////////////////
 	buildContactsListsSelect($select, myBook);
 
+	///////////////////////////////////
+	// Build all available Contacts //
+	///////////////////////////////////
+	drawContacts(myBook);
+
 	//////////////////
 	// Form submit //
 	//////////////////
@@ -243,24 +248,39 @@ $(function () {
 			myBook.add(newList);
 		}
 
-		// Close modal window after submit
+		///////////////////////////////////////
+		// Close modal window after submit //
+		///////////////////////////////////////
 		//$modal.modal('hide');
 		
-		contactElm = createContactWidget(newContact, newList, isWorkContact);
+		///////////////////////////////////////////
+		// Create the HTML for the new contact //
+		///////////////////////////////////////////
+		contactElm = createContactWidget(newContact, myBook);
 
-		$('input#id').val((myBook.getContactId() + 1));  // Update the hidden id input with the highest id + 1
+		//////////////////////////////////////////////////////////
+		// Update the hidden id input with the highest id + 1 //
+		//////////////////////////////////////////////////////////
+		$('input#id').val((myBook.getContactId() + 1));
 
 		/////////////////////////////////////////////////////////
 		// Append the newly created contactElm to the DOM      //
-		/////////////////////////////////////////////////////////
-		if($row.last().length > 0 && $row.last().children().length < 3){ // If row exists on page and items in it does not exceed 3
-			$container.find($row.last()).append(contactElm);
-		}else{ // If row doesn't exists on page OR items in row exceed 3
-			$container.append('<div class="row" data-role="wrapper">'+contactElm+'</div>');
-		}
+		/////////////////////////////////////////////////////////		
+		arrangeContactsDom(contactElm, $container, $row);
 
+		//////////////////////////////
+		// Init Styled checkboxes //
+		//////////////////////////////
 		addCheckboxes();
+
+		////////////////////////////////
+		// Build the Lists <select> //
+		////////////////////////////////
 		buildContactsListsSelect($select, myBook);
+
+		////////////////////////////////////////
+		// Prevent Default browser Behavior //
+		////////////////////////////////////////
 		e.preventDefault();
 	});
 
