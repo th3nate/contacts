@@ -4,6 +4,7 @@
 // TODO: TESTING CODE, REMOVE IT!
 var myContact = new ContactsLib.Contact({
 	id:			  1,
+	listId:		  1,
 	firstName:    'Naor',
 	lastName:     'Ami',
 	birthDate:    new Date(1984, 10, 10),
@@ -17,6 +18,7 @@ var myContact = new ContactsLib.Contact({
 });
 var myContact2 = new ContactsLib.Contact({
 	id:			  2,
+	listId:		  1,
 	firstName:    'Mike',
 	lastName:     'James',
 	birthDate:    new Date(1982, 01, 08),
@@ -30,6 +32,7 @@ var myContact2 = new ContactsLib.Contact({
 });
 var myWorkContact = new ContactsLib.WorkContact({
 	id:			  3,
+	listId:		  1,
 	firstName:    'David',
 	lastName:     'Peretz',
 	birthDate:    new Date(1988, 04, 07),
