@@ -288,7 +288,19 @@ var ContactsLib = (function($) {
 	};
 
 	function Contact(data) {
+
 		var obj = _initProperties(data, fields);
+
+		if(typeof obj.phone === 'string'){ // if phone number is a string and not a New Number then make it one.
+			obj.phone = ContactsLib.PhoneNumber.parse(data.phone);
+		}
+		if(typeof obj.workPhone === 'string'){ // if workPhone number is a string and not a New Number then make it one.
+			obj.workPhone = ContactsLib.PhoneNumber.parse(data.workPhone);
+		}
+		if(typeof obj.mobile === 'string'){ // if mobile number is a string and not a New Number then make it one.
+			obj.mobile = ContactsLib.MobilePhoneNumber.parse(data.mobile);
+		}
+
 		_props(this, obj);
 	}
 
