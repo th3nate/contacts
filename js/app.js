@@ -3,38 +3,49 @@ $(function () {
 	////////////////
 	// Variables //
 	////////////////
-	var $container 	  = $("#contacts"),
-		$form 	      = $("#contact-form"),
-		$fields       = $form.find("input, textarea, select"),
-		$select       = $form.find("select#group-assign"),
-		$chkBox       = $form.find("input#is-work-contact"),
-		$modal 	      = $("#contact-modal"),
-        contactId 	  = myBook.getContactId(),
-		orgTitle      = $modal.find("#modal-title").html(),
-		promise       = $.getJSON('data/MOCK_DATA_REGULAR.json'),
+	var $container 	      = $("#contacts"),
+		$form             = $("#contact-form"),
+		$fields           = $form.find("input, textarea, select"),
+		$select           = $form.find("select#group-assign"),
+		$chkBox           = $form.find("input#is-work-contact"),
+		$inp_firstName    = $form.find("#first-name"),
+		$inp_lastName     = $form.find("#last-name"),
+		$inp_birthDate    = $form.find("#birth-date"),
+		$inp_phone        = $form.find("#phone"),
+		$inp_workPhone    = $form.find("#work-phone"),
+		$inp_mobile       = $form.find("#mobile"),
+		$inp_email        = $form.find("#email"),
+		$inp_imageUrl     = $form.find("#image-url"),
+		$inp_facebookPage = $form.find("#facebook-page"),
+		$inp_comments     = $form.find("#comments"),
+		$inp_id   		  = $form.find("#id"),
+		$modal            = $("#contact-modal"),
+        contactId 	      = myBook.getContactId(),
+		orgTitle          = $modal.find("#modal-title").html(),
+		promise           = $.getJSON('data/MOCK_DATA_REGULAR.json'),
 		isWorkContact,
-		domElWork = '\
+		domElWork         = '\
 				<input type="text" name="position" id="position" class="form-control input-lg" placeholder="Position" tabindex="12">\
 				<input type="text" name="color" id="color" class="form-control input-lg" placeholder="Color" tabindex="12">\
 				',
-		domElUser = '<input type="text" name="new-user-list" id="new-user-list" class="form-control input-lg" placeholder="Enter groups name" tabindex="12">';	
+		domElUser         = '<input type="text" name="new-user-list" id="new-user-list" class="form-control input-lg" placeholder="Enter groups name" tabindex="12">';	
 	
 	////////////////////////////////
 	// TODO: Mock data REMOVE     //
 	////////////////////////////////
-	var $input1  = $form.find("#first-name").val("Nate"),
-		$input2  = $form.find("#last-name").val("Cook"),
-		$input3  = $form.find("#birth-date").val("04/12/1978"),
-		$input4  = $form.find("#phone").val("03-6049741"),
-		$input5  = $form.find("#work-phone").val("03-6043386"),
-		$input6  = $form.find("#mobile").val("052-5118833"),
-		$input7  = $form.find("#email").val("natanel7@gmail.com"),
-		$input8  = $form.find("#image-url").val("http://api.randomuser.me/portraits/men/49.jpg"),
-		$input9  = $form.find("#facebook-page").val("http://facebook.com");
-		$input10 = $form.find("#comments").val("For performance reasons, all icons require a base class and individual icon class. To use, place the following code just about anywhere. Be sure to leave a space between the icon and text for proper padding.");
+	$inp_firstName.val("Nate")
+	$inp_lastName.val("Cook");
+	$inp_birthDate.val("04/12/1978");
+	$inp_phone.val("03-6049741");
+	$inp_workPhone.val("03-6043386");
+	$inp_mobile.val("052-5118833");
+	$inp_email.val("natanel7@gmail.com");
+	$inp_imageUrl.val("http://api.randomuser.me/portraits/men/49.jpg");
+	$inp_facebookPage.val("http://facebook.com");
+	$inp_comments.val("For performance reasons, all icons require a base class and individual icon class. To use, place the following code just about anywhere. Be sure to leave a space between the icon and text for proper padding.");
 
 	// Update the DOM with the current Contact id
-	$('input#id').val((contactId + 1));
+	$inp_id.val((contactId + 1));
 
 	//////////////////////
 	// init checkboxes //
@@ -82,7 +93,6 @@ $(function () {
 			}
 		});
 	}
-	addCheckboxes();
 
 	//////////////////////////////////////////////////////////
 	// get items data on click and write it to DOM element //
@@ -138,19 +148,74 @@ $(function () {
 		}
 	}
 
-	////////////////////////////////////
-	// Control for modal interaction //
-	////////////////////////////////////	
+	//////////////////////////////////////////////
+	// Control for modal interaction : Show     //
+	//////////////////////////////////////////////
 	$modal.on('show.bs.modal', function (e) {
-		var button = $(e.relatedTarget), // Button that triggered the modal
-			recipient = button.data('cid'), // Extract info from data-* attributes
+		var 
+			obj          = {},
+			button       = $(e.relatedTarget), // Button that triggered the modal
+			cid     	 = button.data('cid'), // Extract info from data-* attributes
 			$modalWindow = $(this);
 
-		if(recipient >= 0){
-			$modalWindow.find('#modal-title').text('Edit Contact id: ' + recipient);
-		}else{
+		if(cid >= 0){ // If we are in Edit mode.
+			obj = parseContact(myBook.getContact(cid));
+
+			$modalWindow.find('#modal-title').text('Edit: (' + obj.contact.id + ') ' + obj.contact.firstName + ' ' + obj.contact.lastName);
+			$inp_firstName.val(obj.contact.firstName);
+			$inp_lastName.val(obj.contact.lastName);
+			$inp_birthDate.val(obj.contact.birthDate);
+			$inp_phone.val(obj.phone);
+			$inp_workPhone.val(obj.workPhone);
+			$inp_mobile.val(obj.mobile);
+			$inp_email.val(obj.contact.email);
+			$inp_imageUrl.val(obj.contact.imageUrl);
+			$inp_facebookPage.val(obj.contact.facebookPage);
+			$inp_comments.val(obj.contact.comments);
+			$select.find("option[value='"+obj.contact.listId+"']").prop('selected', true);
+			$inp_id.val(obj.contact.id);
+			
+			if(obj.isWorkContact === true){
+				$chkBox.prop('checked', true);
+				showWorkFields();
+				$form.find("#position").val(obj.contact.position);
+				$form.find("#color").val(obj.contact.color);
+			}
+
+		}else{ // If we are in a New contact mode.
 			$modalWindow.find('#modal-title').html(orgTitle);
+			
+			////////////////////////////////
+			// TODO: Mock data REMOVE     //
+			////////////////////////////////
+			$inp_firstName.val("Nate")
+			$inp_lastName.val("Cook");
+			$inp_birthDate.val("04/12/1978");
+			$inp_phone.val("03-6049741");
+			$inp_workPhone.val("03-6043386");
+			$inp_mobile.val("052-5118833");
+			$inp_email.val("natanel7@gmail.com");
+			$inp_imageUrl.val("http://api.randomuser.me/portraits/men/49.jpg");
+			$inp_facebookPage.val("http://facebook.com");
+			$inp_comments.val("For performance reasons, all icons require a base class and individual icon class. To use, place the following code just about anywhere. Be sure to leave a space between the icon and text for proper padding.");
+			
+			$inp_id.val((myBook.getContactId() + 1));	
 		}
+	});
+
+	//////////////////////////////////////////////
+	// Control for modal interaction : Hide     //
+	//////////////////////////////////////////////
+	$modal.on('hide.bs.modal', function (e) {
+		
+		$form.find("input, textarea")
+			.not(':button, :submit, :reset, :hidden')
+			.val('')
+			.removeAttr('checked');
+
+		$select.find("option").removeAttr('selected');
+		$form.find("#new-user-list").remove();
+		showWorkFields();
 	});
 
 	///////////////////////////////////
@@ -185,6 +250,11 @@ $(function () {
 	// Build all available Contacts //
 	///////////////////////////////////
 	drawContacts(myBook);
+	
+	///////////////////////////
+	// Init addCheckboxes() //
+	///////////////////////////
+	addCheckboxes();
 
 	//////////////////
 	// Form submit //
@@ -214,10 +284,14 @@ $(function () {
 		$.each(data, function(index, val) {
 			 key = val["name"];
 			 //  pause on 'groupAssign' field and get the text value of the <option>,
-			 //  the value of the <option> is used for the cssClass property.
+			 //  the value of the <option> is used for the listId property.
 			 if(key === "groupAssign"){ 
-			 	tmpObj[key]        = $select.find(":selected").text();
-			 	tmpObj["cssClass"] = val["value"];
+			 	tmpObj[key] = $select.find(":selected").text();
+			 	if(val["value"] === "user"){ // prevent entry of type 'String' in 'listId' property
+				 	tmpObj["listId"] = (myBook.getListId()+1);
+				 	return;
+			 	}
+			 	tmpObj["listId"] = val["value"];
 			 	return;
 			 }
 			 if(key === "id"){ //  pause on 'id' field and convert to integer
@@ -233,50 +307,70 @@ $(function () {
 			list = $("#new-user-list").val();
 		}
         
-		if (!isWorkContact) {
-			newContact = new ContactsLib.Contact(tmpObj);
-		} else {
-			newContact = new ContactsLib.WorkContact(tmpObj);
-		}
+		if(myBook.getContact(tmpObj.id)){ // If Contact already exists, we edit it.
 
-		if (myBook.get(list)) { // If list already exists
-			newList = myBook.create(list, newContact);
-		} else {
-			id      = myBook.getListId(); // get the cuurrent highest id
-			newId   = (id+1); 	// Advance the current id by 1
-			newList = new ContactsLib.ContactsList(list, [newContact], newId);
-			myBook.add(newList);
+			contact = myBook.getContact(tmpObj.id)
+			contact.editContact(tmpObj);
+			drawContacts(myBook);
+		
+			if (myBook.get(list)) { // If list already exists
+				newList = myBook.create(list, contact);
+			} else {
+				id      = myBook.getListId(); // get the cuurrent highest id
+				newId   = (id+1); 	// Advance the current id by 1
+				newList = new ContactsLib.ContactsList(list, [contact], newId);
+				myBook.add(newList);
+			}
+		
+		}else{ // If it's a new Contact
+			
+			if (!isWorkContact) {
+				newContact = new ContactsLib.Contact(tmpObj);
+			} else {
+				newContact = new ContactsLib.WorkContact(tmpObj);
+			}
+
+			if (myBook.get(list)) { // If list already exists
+				newList = myBook.create(list, newContact);
+			} else {
+				id      = myBook.getListId(); // get the cuurrent highest id
+				newId   = (id+1); 	// Advance the current id by 1
+				newList = new ContactsLib.ContactsList(list, [newContact], newId);
+				myBook.add(newList);
+			}
+
+			///////////////////////////////////////////
+			// Create the HTML for the new contact //
+			///////////////////////////////////////////
+			contactElm = createContactWidget(newContact, myBook);
+
+			//////////////////////////////////////////////////////////
+			// Update the hidden id input with the highest id + 1 //
+			//////////////////////////////////////////////////////////
+			$inp_id.val((myBook.getContactId() + 1));
+
+			/////////////////////////////////////////////////////////
+			// Append the newly created contactElm to the DOM      //
+			/////////////////////////////////////////////////////////		
+			arrangeContactsDom(contactElm, $container, $row);
+
 		}
+        
 
 		///////////////////////////////////////
 		// Close modal window after submit //
 		///////////////////////////////////////
-		//$modal.modal('hide');
+		$modal.modal('hide');
 		
-		///////////////////////////////////////////
-		// Create the HTML for the new contact //
-		///////////////////////////////////////////
-		contactElm = createContactWidget(newContact, myBook);
-
-		//////////////////////////////////////////////////////////
-		// Update the hidden id input with the highest id + 1 //
-		//////////////////////////////////////////////////////////
-		$('input#id').val((myBook.getContactId() + 1));
-
-		/////////////////////////////////////////////////////////
-		// Append the newly created contactElm to the DOM      //
-		/////////////////////////////////////////////////////////		
-		arrangeContactsDom(contactElm, $container, $row);
+		////////////////////////////////
+		// Build the Lists <select> //
+		////////////////////////////////
+		buildContactsListsSelect($select, myBook);
 
 		//////////////////////////////
 		// Init Styled checkboxes //
 		//////////////////////////////
 		addCheckboxes();
-
-		////////////////////////////////
-		// Build the Lists <select> //
-		////////////////////////////////
-		buildContactsListsSelect($select, myBook);
 
 		////////////////////////////////////////
 		// Prevent Default browser Behavior //
