@@ -43,10 +43,12 @@ function buildContactsListsSelect ($select, book){
  * @return {[type]}                			[Returns a string of HTML]
  */
 function createContactWidget(contact, book){
-
-	var contact = book.getContact(contact.id),
-		isWorkContact = (contact.constructor.name === "WorkContact") ? true : false,		
-		item    = '\
+	var contact       = book.getContact(contact.id),
+		isWorkContact = (contact.constructor.name === "WorkContact") ? true : false,
+		phone         = (contact.phone.fullNumber !== null) ? phone = contact.phone.fullNumber : phone = contact.phone,
+		workPhone     = (contact.workPhone.fullNumber !== null) ? workPhone = contact.workPhone.fullNumber : workPhone = contact.workPhone,
+		mobile        = (contact.mobile.fullNumber !== null) ? mobile = contact.mobile.fullNumber : mobile = contact.mobile,
+		item          = '\
 		<div class="col-xs-12 col-sm-4 col-md-4 contact-item-wrapper">\
 			<div data-group="'+contact.cssClass+'" class="thumbnail contact-item relative">\
 				<div class="col-xs-4 col-sm-6 col-md-6">\
@@ -56,8 +58,8 @@ function createContactWidget(contact, book){
 					<h4 class="name">'+contact.firstName+' '+contact.lastName+'</h4>\
 					<span class="glyphicon glyphicon-envelope text-muted c-info" data-toggle="tooltip" title="'+contact.email+'"></span>\
 					<span class="visible-xs"><span class="text-muted">'+contact.email+'</span><br /></span>\
-					<span class="glyphicon glyphicon-phone text-muted c-info" data-toggle="tooltip" title="'+contact.mobile+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+contact.mobile+'</span><br /></span>\
+					<span class="glyphicon glyphicon-phone text-muted c-info" data-toggle="tooltip" title="'+mobile+'"></span>\
+					<span class="visible-xs"><span class="text-muted">'+mobile+'</span><br /></span>\
 					<span class="glyphicon glyphicon-gift text-muted c-info" data-toggle="tooltip" title="'+contact.birthDate+'"></span>\
 					<span class="visible-xs"><span class="text-muted">'+contact.birthDate+'</span><br /></span>\
 					';
@@ -70,10 +72,10 @@ function createContactWidget(contact, book){
 					';
 			}							
 				item += '\
-					<span class="glyphicon glyphicon-earphone text-muted c-info" data-toggle="tooltip" title="'+contact.phone+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+contact.phone+'</span><br /></span>\
-					<span class="glyphicon glyphicon-briefcase text-muted c-info" data-toggle="tooltip" title="'+contact.workPhone+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+contact.workPhone+'</span><br /></span>\
+					<span class="glyphicon glyphicon-earphone text-muted c-info" data-toggle="tooltip" title="'+phone+'"></span>\
+					<span class="visible-xs"><span class="text-muted">'+phone+'</span><br /></span>\
+					<span class="glyphicon glyphicon-briefcase text-muted c-info" data-toggle="tooltip" title="'+workPhone+'"></span>\
+					<span class="visible-xs"><span class="text-muted">'+workPhone+'</span><br /></span>\
 					<a href="'+contact.facebookPage+'"><span class="glyphicon glyphicon-link text-muted c-info" data-toggle="tooltip" title="See my FB page"></span>\
 					<span class="visible-xs"><span class="text-muted break-word">See my FB page</span></span></a>\
 					<br />\
