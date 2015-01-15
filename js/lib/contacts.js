@@ -33,7 +33,7 @@ var ContactsLib = (function($) {
 			'imageUrl',
 			'comments',
 			'facebookPage',
-			'cssClass'
+			'listId'
 		];
 
 	/**
@@ -302,6 +302,10 @@ var ContactsLib = (function($) {
 		}
 
 		_props(this, obj);
+	}
+
+	Contact.prototype.editContact = function(data){
+		_props(this, data);
 	}
 
 	Contact.prototype.validate = function() {
