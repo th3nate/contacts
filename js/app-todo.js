@@ -35,7 +35,21 @@ function buildContactsListsSelect ($select, book){
 
 	}
 }
-
+function parseContact(contact){
+	var 
+		isWorkContact = (contact.constructor.name === "WorkContact") ? true : false,
+		phone         = (contact.phone.fullNumber !== null) ? phone = contact.phone.fullNumber : phone = contact.phone,
+		workPhone     = (contact.workPhone.fullNumber !== null) ? workPhone = contact.workPhone.fullNumber : workPhone = contact.workPhone,
+		mobile        = (contact.mobile.fullNumber !== null) ? mobile = contact.mobile.fullNumber : mobile = contact.mobile;
+	
+	return {
+		contact:       contact,
+		isWorkContact: isWorkContact,
+		phone:         phone,
+		workPhone:     workPhone,
+		mobile:        mobile
+	}
+}
 /**
  * Create Contact DOM widget
  * @param  {Contact}  		contact      	[The Contact to draw]
@@ -43,50 +57,47 @@ function buildContactsListsSelect ($select, book){
  * @return {[type]}                			[Returns a string of HTML]
  */
 function createContactWidget(contact, book){
-	var contact       = book.getContact(contact.id),
-		isWorkContact = (contact.constructor.name === "WorkContact") ? true : false,
-		phone         = (contact.phone.fullNumber !== null) ? phone = contact.phone.fullNumber : phone = contact.phone,
-		workPhone     = (contact.workPhone.fullNumber !== null) ? workPhone = contact.workPhone.fullNumber : workPhone = contact.workPhone,
-		mobile        = (contact.mobile.fullNumber !== null) ? mobile = contact.mobile.fullNumber : mobile = contact.mobile,
-		item          = '\
+	
+	var obj = parseContact(book.getContact(contact.id)),
+		item    = '\
 		<div class="col-xs-12 col-sm-4 col-md-4 contact-item-wrapper">\
-			<div data-group="'+contact.cssClass+'" class="thumbnail contact-item relative">\
+			<div data-group="'+obj.contact.listId+'" class="thumbnail contact-item relative">\
 				<div class="col-xs-4 col-sm-6 col-md-6">\
-					<img src="'+contact.imageUrl+'" alt="'+contact.firstName+' '+contact.lastName+'" class="img-responsive img-circle" />\
+					<img src="'+obj.contact.imageUrl+'" alt="'+obj.contact.firstName+' '+obj.contact.lastName+'" class="img-responsive img-circle" />\
 				</div>\
 				<div class="col-xs-8 col-sm-6 col-md-6">\
-					<h4 class="name">'+contact.firstName+' '+contact.lastName+'</h4>\
-					<span class="glyphicon glyphicon-envelope text-muted c-info" data-toggle="tooltip" title="'+contact.email+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+contact.email+'</span><br /></span>\
-					<span class="glyphicon glyphicon-phone text-muted c-info" data-toggle="tooltip" title="'+mobile+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+mobile+'</span><br /></span>\
-					<span class="glyphicon glyphicon-gift text-muted c-info" data-toggle="tooltip" title="'+contact.birthDate+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+contact.birthDate+'</span><br /></span>\
+					<h4 class="name">'+obj.contact.firstName+' '+obj.contact.lastName+'</h4>\
+					<span class="glyphicon glyphicon-envelope text-muted c-info" data-toggle="tooltip" title="'+obj.contact.email+'"></span>\
+					<span class="visible-xs"><span class="text-muted">'+obj.contact.email+'</span><br /></span>\
+					<span class="glyphicon glyphicon-phone text-muted c-info" data-toggle="tooltip" title="'+obj.mobile+'"></span>\
+					<span class="visible-xs"><span class="text-muted">'+obj.mobile+'</span><br /></span>\
+					<span class="glyphicon glyphicon-gift text-muted c-info" data-toggle="tooltip" title="'+obj.contact.birthDate+'"></span>\
+					<span class="visible-xs"><span class="text-muted">'+obj.contact.birthDate+'</span><br /></span>\
 					';
-			if(isWorkContact){							
+			if(obj.isWorkContact){							
 				item += '\
-					<span class="glyphicon glyphicon-star text-muted c-info" data-toggle="tooltip" title="'+contact.position+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+contact.position+'</span><br /></span>\
-					<span class="glyphicon glyphicon-star text-muted c-info" data-toggle="tooltip" title="'+contact.color+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+contact.color+'</span><br /></span>\
+					<span class="glyphicon glyphicon-star text-muted c-info" data-toggle="tooltip" title="'+obj.contact.position+'"></span>\
+					<span class="visible-xs"><span class="text-muted">'+obj.contact.position+'</span><br /></span>\
+					<span class="glyphicon glyphicon-star text-muted c-info" data-toggle="tooltip" title="'+obj.contact.color+'"></span>\
+					<span class="visible-xs"><span class="text-muted">'+obj.contact.color+'</span><br /></span>\
 					';
 			}							
 				item += '\
-					<span class="glyphicon glyphicon-earphone text-muted c-info" data-toggle="tooltip" title="'+phone+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+phone+'</span><br /></span>\
-					<span class="glyphicon glyphicon-briefcase text-muted c-info" data-toggle="tooltip" title="'+workPhone+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+workPhone+'</span><br /></span>\
-					<a href="'+contact.facebookPage+'"><span class="glyphicon glyphicon-link text-muted c-info" data-toggle="tooltip" title="See my FB page"></span>\
+					<span class="glyphicon glyphicon-earphone text-muted c-info" data-toggle="tooltip" title="'+obj.phone+'"></span>\
+					<span class="visible-xs"><span class="text-muted">'+obj.phone+'</span><br /></span>\
+					<span class="glyphicon glyphicon-briefcase text-muted c-info" data-toggle="tooltip" title="'+obj.workPhone+'"></span>\
+					<span class="visible-xs"><span class="text-muted">'+obj.workPhone+'</span><br /></span>\
+					<a href="'+obj.contact.facebookPage+'"><span class="glyphicon glyphicon-link text-muted c-info" data-toggle="tooltip" title="See my FB page"></span>\
 					<span class="visible-xs"><span class="text-muted break-word">See my FB page</span></span></a>\
 					<br />\
-					<a data-toggle="collapse" href="#collapse-'+contact.id+'" aria-expanded="false" aria-controls="collapse-'+contact.id+'"><i class="glyphicon glyphicon-comment text-muted"></i> Show more</a>\
+					<a data-toggle="collapse" href="#collapse-'+obj.contact.id+'" aria-expanded="false" aria-controls="collapse-'+contact.id+'"><i class="glyphicon glyphicon-comment text-muted"></i> Show more</a>\
 				</div>\
-				<a href="#" class="pos-icon-top edit-contact" data-cid="'+contact.id+'" data-tooltip="true" title="Edit contact" data-toggle="modal" data-target="#contact-modal"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>\
+				<a href="#" class="pos-icon-top edit-contact" data-cid="'+obj.contact.id+'" data-tooltip="true" title="Edit contact" data-toggle="modal" data-target="#contact-modal"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>\
 				<input type="checkbox">\
 				<div class="clearfix"></div>\
-				<div class="collapse" id="collapse-'+contact.id+'">\
+				<div class="collapse" id="collapse-'+obj.contact.id+'">\
 					<div class="well comments">\
-						<span class="text-muted break-word">'+contact.comments+'</span>\
+						<span class="text-muted break-word">'+obj.contact.comments+'</span>\
 					</div>\
 				</div>\
 			</div>\
@@ -100,13 +111,17 @@ function createContactWidget(contact, book){
  * @param  {ContactsBook}	book  [The Contacts available inside the book]
  * @return {[String]}             [Returns a string of HTML]
  */
-function drawContacts(book){
+function drawContacts(book, $container){
 	var
 		contacts = book.initContacts(),
 		i,
 		contactHTML,
 		isWorkContact,
 		len = contacts.length;
+
+	$container = ($container === undefined) ? $container = $("#contacts") : $container;
+	
+	$container.empty();
 
 	for(i = 0; i < len; i++){
 		isWorkContact = (contacts[i].constructor.name === "WorkContact") ? true : false;
