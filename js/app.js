@@ -274,8 +274,9 @@ $(function () {
 			newId,
 			newContact,
 			newList,
+			currList,
 			contact,
-			item;
+			existingContact;
 		
 		/**
 		 * iterate through the serializeArray Objects
@@ -291,7 +292,7 @@ $(function () {
 				 	tmpObj["listId"] = (myBook.getListId()+1);
 				 	return;
 			 	}
-			 	tmpObj["listId"] = val["value"];
+			 	tmpObj["listId"] = parseInt(val["value"], 10);
 			 	return;
 			 }
 			 if(key === "id"){ //  pause on 'id' field and convert to integer
@@ -306,13 +307,27 @@ $(function () {
 		if($select.val() == "user" && $("#new-user-list").length > 0){
 			list = $("#new-user-list").val();
 		}
-        
-		if(myBook.getContact(tmpObj.id)){ // If Contact already exists, we edit it.
 
-			contact = myBook.getContact(tmpObj.id)
+        existingContact = myBook.getContact(tmpObj.id);
+
+		if(existingContact){ // If Contact already exists, we edit it.
+
+			contact = existingContact;
+			currList = myBook.getById(contact.listId);
+			
 			contact.editContact(tmpObj);
+			myBook.allocateContact(currList, list, contact);
+
 			drawContacts(myBook);
-		
+				
+		}else{ // If it's a new Contact
+			
+			if (!isWorkContact) {
+				contact = new ContactsLib.Contact(tmpObj);
+			} else {
+				contact = new ContactsLib.WorkContact(tmpObj);
+			}
+
 			if (myBook.get(list)) { // If list already exists
 				newList = myBook.create(list, contact);
 			} else {
@@ -321,28 +336,11 @@ $(function () {
 				newList = new ContactsLib.ContactsList(list, [contact], newId);
 				myBook.add(newList);
 			}
-		
-		}else{ // If it's a new Contact
-			
-			if (!isWorkContact) {
-				newContact = new ContactsLib.Contact(tmpObj);
-			} else {
-				newContact = new ContactsLib.WorkContact(tmpObj);
-			}
-
-			if (myBook.get(list)) { // If list already exists
-				newList = myBook.create(list, newContact);
-			} else {
-				id      = myBook.getListId(); // get the cuurrent highest id
-				newId   = (id+1); 	// Advance the current id by 1
-				newList = new ContactsLib.ContactsList(list, [newContact], newId);
-				myBook.add(newList);
-			}
 
 			///////////////////////////////////////////
 			// Create the HTML for the new contact //
 			///////////////////////////////////////////
-			contactElm = createContactWidget(newContact, myBook);
+			contactElm = createContactWidget(contact, myBook);
 
 			//////////////////////////////////////////////////////////
 			// Update the hidden id input with the highest id + 1 //
@@ -356,7 +354,6 @@ $(function () {
 
 		}
         
-
 		///////////////////////////////////////
 		// Close modal window after submit //
 		///////////////////////////////////////

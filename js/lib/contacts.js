@@ -162,7 +162,7 @@ var ContactsLib = (function($) {
 	 */
 	ContactsBook.prototype.getContact = function(id){
 		var i,
-			contact = {},
+			contact,
 			lists = Object.keys(this.lists),
 			contacts,
 			k,
@@ -179,6 +179,32 @@ var ContactsLib = (function($) {
 			}
 		}
 		return contact;
+	}
+
+	/**
+	 * [Remove a specific contact by its 'id' property]
+	 * @param  {[Number]} id [...]
+	 * @return {[Contact]}   [Returns the desired contact]
+	 */
+	ContactsBook.prototype.removeContact = function(id){
+		var i,
+			contact,
+			lists = Object.keys(this.lists),
+			contacts,
+			k,
+			len = lists.length,
+			len2;
+
+		for(i=0; i<len; i++){
+			contacts = this.lists[lists[i]].contacts;
+			len2 = contacts.length;
+			for(k = 0; k < len2; k++){
+				if(contacts[k].id === id){
+					delete contacts[k];
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -240,6 +266,22 @@ var ContactsLib = (function($) {
 		}
 		return null;
 	};
+	ContactsBook.prototype.getById = function(id) {
+		var
+			i,
+			lists = Object.keys(this.lists),
+			list,
+			len   = lists.length;
+
+		for(i = 0; i < len; i++){
+			list = this.lists[lists[i]];
+			if (list.id === id) {
+				return list.name;
+			}
+		}
+
+		return null;
+	};
 	ContactsBook.prototype.delete = function(listName) {
 		var list = this.get(listName);
 		if (list !== null) {
@@ -270,6 +312,35 @@ var ContactsLib = (function($) {
 	};
 
 	/**
+	 * Move a contact to another list
+	 * @param  {[ContactList]} 	currentList [The list in which the contact's currently in.]
+	 * @param  {[ContactList]} 	destList    [The list to move the contact's to.]
+	 * @param  {[Contact]} 		contact     [The contact to move]
+	 */
+	ContactsBook.prototype.allocateContact = function(currentList, destList, contact){
+		var
+			removeContact,
+			i,
+			contacts = this.lists[currentList].contacts,
+			len      = this.lists[currentList].contacts.length;
+
+		removeContact = this.getContact(contact.id);
+		
+		if(this.get(destList)){
+			this.create(destList, removeContact);
+		}else{
+			this.create(destList, [removeContact]);
+		}
+		
+		for(i = 0; i < len; i++){
+			if(contacts[i].id === contact.id){
+				contacts.splice(i, 1);
+				return;
+			}
+		}
+	}
+
+	/**
 	 * Given a ContactsList name and Array of Contacts
 	 * we create a New ContactsList, OR - 
 	 * adding Contact to an existing list
@@ -282,7 +353,7 @@ var ContactsLib = (function($) {
 			this.lists[name].contacts.push(arr);
 			console.info("List already defined, just adding contact.");
 		}else{		
-			this.lists[name] = new ContactsList(name, arr);
+			this.lists[name] = new ContactsList(name, arr, (this.getListId()+1));
 		}
 		return this.lists[name];
 	};
@@ -305,7 +376,7 @@ var ContactsLib = (function($) {
 	}
 
 	Contact.prototype.editContact = function(data){
-		_props(this, data);
+		Contact.call(this, data);
 	}
 
 	Contact.prototype.validate = function() {

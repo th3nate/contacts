@@ -65,24 +65,25 @@ myBook.add(newList);
 myBook.add(newList2);
 console.log(myBook);
 
-// return filtered list
+/* return filtered list
 var filtered = newList.filter(function (contact, index, arrObj) {
 	return contact.firstName.charAt(0).toLowerCase() !== 'n'
 });
-//console.info(filtered);
-
-// example of find method
+console.info(filtered);
+*/
+/* example of find method
 var who = newList.find(1);
-//console.log(who);
-
-// example of findBy method
+console.log(who);
+*/
+/* example of findBy method
 var findByName = newList.findBy(function (contact, index, arrObj) {
 	return contact.firstName.toLowerCase() == 'mike'
 });
-//console.info(findByName);
-
-// example of removeBy method
+console.info(findByName);
+*/
+/* example of removeBy method
 var removeByName = newList.removeBy(function (contact, index, arrObj) {
 	return contact.firstName.toLowerCase() == 'mike'
 });
-//console.info(removeByName);
+console.info(removeByName);
+*/
