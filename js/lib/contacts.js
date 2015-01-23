@@ -200,7 +200,7 @@ var ContactsLib = (function($) {
 			len2 = contacts.length;
 			for(k = 0; k < len2; k++){
 				if(contacts[k].id === id){
-					delete contacts[k];
+					contacts.splice(k, k+1);
 				}
 			}
 		}

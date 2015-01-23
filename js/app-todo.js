@@ -6,33 +6,26 @@
  * @return {HTML}         		[Returning the $select element filled with options]
  */
 function buildContactsListsSelect ($select, book){
-	if(book.constructor.name === "ContactsBook" && $select.is("select")){
+	if(book instanceof ContactsLib.ContactsBook && $select.is("select")){
 		var lists = Object.keys(book.lists),
 			str = '',
 			i,
 			index,
 			val,
+			doc = $(document.createDocumentFragment()),
 			len = lists.length;
-		/* Using $each loop
-		$.each(book.lists, function(index, val) {
-			if($select.find('option[value="'+val.id+'"]').length <= 0){ // if option already exists, dont write it again.
-				$select.find('option:last').before($('<option>', { 
-					value: val.id,
-					text : val.name 
-				}));
-			}
-		});*/
+
+		$select.find("option:not(.static)").remove(); // Remove all options but static ones.
+
 		for(i = 0; i < len; i++){
 			index  = lists[i];
 			val    = book.lists[index];
-			if($select.find('option[value="'+val.id+'"]').length <= 0){ // if option already exists, dont write it again.
-				$select.find('option:last').before($('<option>', { 
-					value: val.id,
-					text : val.name 
-				}));
-			}
+			doc.append($('<option>', { 
+				value: val.id,
+				text : val.name 
+			}));
 		}
-
+		$select.find('option:last').before(doc);
 	}
 }
 function parseContact(contact){
