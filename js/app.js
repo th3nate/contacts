@@ -266,6 +266,7 @@ $(function () {
 			len    = data.length,
 			tmpObj = {},
 			$row   = $("div[data-role='wrapper']"),
+			$inputNewListName = $("#new-user-list"),
 			i,
 			key,
 			value,
@@ -304,8 +305,8 @@ $(function () {
 
 		list = tmpObj["groupAssign"];
 
-		if($select.val() == "user" && $("#new-user-list").length > 0){
-			list = $("#new-user-list").val();
+		if($select.val() == "user" && $inputNewListName.length > 0){
+			list = $inputNewListName.val();
 		}
 
         existingContact = myBook.getContact(tmpObj.id);

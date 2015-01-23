@@ -1,3 +1,9 @@
+(function ($) {
+
+})(jQuery);
+
+var contactTemplate = Handlebars.compile($('#contact-template').html());
+
 /**
  * Build a select element form available 
  * lists in ContactsBook
@@ -6,33 +12,26 @@
  * @return {HTML}         		[Returning the $select element filled with options]
  */
 function buildContactsListsSelect ($select, book){
-	if(book.constructor.name === "ContactsBook" && $select.is("select")){
+	if(book instanceof ContactsLib.ContactsBook && $select.is("select")){
 		var lists = Object.keys(book.lists),
 			str = '',
 			i,
 			index,
 			val,
+			doc = $(document.createDocumentFragment()),
 			len = lists.length;
-		/* Using $each loop
-		$.each(book.lists, function(index, val) {
-			if($select.find('option[value="'+val.id+'"]').length <= 0){ // if option already exists, dont write it again.
-				$select.find('option:last').before($('<option>', { 
-					value: val.id,
-					text : val.name 
-				}));
-			}
-		});*/
+
+		$select.find("option:not(.static)").remove(); // Remove all options but static ones.
+
 		for(i = 0; i < len; i++){
 			index  = lists[i];
 			val    = book.lists[index];
-			if($select.find('option[value="'+val.id+'"]').length <= 0){ // if option already exists, dont write it again.
-				$select.find('option:last').before($('<option>', { 
-					value: val.id,
-					text : val.name 
-				}));
-			}
+			doc.append($('<option>', { 
+				value: val.id,
+				text : val.name 
+			}));
 		}
-
+		$select.find('option:last').before(doc);
 	}
 }
 function parseContact(contact){
@@ -58,52 +57,8 @@ function parseContact(contact){
  */
 function createContactWidget(contact, book){
 	
-	var obj = parseContact(book.getContact(contact.id)),
-		item    = '\
-		<div class="col-xs-12 col-sm-4 col-md-4 contact-item-wrapper">\
-			<div data-group="'+obj.contact.listId+'" class="thumbnail contact-item relative">\
-				<div class="col-xs-4 col-sm-6 col-md-6">\
-					<img src="'+obj.contact.imageUrl+'" alt="'+obj.contact.firstName+' '+obj.contact.lastName+'" class="img-responsive img-circle" />\
-				</div>\
-				<div class="col-xs-8 col-sm-6 col-md-6">\
-					<h4 class="name">'+obj.contact.firstName+' '+obj.contact.lastName+'</h4>\
-					<span class="glyphicon glyphicon-envelope text-muted c-info" data-toggle="tooltip" title="'+obj.contact.email+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+obj.contact.email+'</span><br /></span>\
-					<span class="glyphicon glyphicon-phone text-muted c-info" data-toggle="tooltip" title="'+obj.mobile+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+obj.mobile+'</span><br /></span>\
-					<span class="glyphicon glyphicon-gift text-muted c-info" data-toggle="tooltip" title="'+obj.contact.birthDate+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+obj.contact.birthDate+'</span><br /></span>\
-					';
-			if(obj.isWorkContact){							
-				item += '\
-					<span class="glyphicon glyphicon-star text-muted c-info" data-toggle="tooltip" title="'+obj.contact.position+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+obj.contact.position+'</span><br /></span>\
-					<span class="glyphicon glyphicon-star text-muted c-info" data-toggle="tooltip" title="'+obj.contact.color+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+obj.contact.color+'</span><br /></span>\
-					';
-			}							
-				item += '\
-					<span class="glyphicon glyphicon-earphone text-muted c-info" data-toggle="tooltip" title="'+obj.phone+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+obj.phone+'</span><br /></span>\
-					<span class="glyphicon glyphicon-briefcase text-muted c-info" data-toggle="tooltip" title="'+obj.workPhone+'"></span>\
-					<span class="visible-xs"><span class="text-muted">'+obj.workPhone+'</span><br /></span>\
-					<a href="'+obj.contact.facebookPage+'"><span class="glyphicon glyphicon-link text-muted c-info" data-toggle="tooltip" title="See my FB page"></span>\
-					<span class="visible-xs"><span class="text-muted break-word">See my FB page</span></span></a>\
-					<br />\
-					<a data-toggle="collapse" href="#collapse-'+obj.contact.id+'" aria-expanded="false" aria-controls="collapse-'+contact.id+'"><i class="glyphicon glyphicon-comment text-muted"></i> Show more</a>\
-				</div>\
-				<a href="#" class="pos-icon-top edit-contact" data-cid="'+obj.contact.id+'" data-tooltip="true" title="Edit contact" data-toggle="modal" data-target="#contact-modal"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>\
-				<input type="checkbox">\
-				<div class="clearfix"></div>\
-				<div class="collapse" id="collapse-'+obj.contact.id+'">\
-					<div class="well comments">\
-						<span class="text-muted break-word">'+obj.contact.comments+'</span>\
-					</div>\
-				</div>\
-			</div>\
-		</div>';
-
-	return item;
+	var contact = book.getContact(contact.id);
+	return contactTemplate(contact);
 }
 
 /**
