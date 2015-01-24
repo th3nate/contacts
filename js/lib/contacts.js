@@ -200,7 +200,8 @@ var ContactsLib = (function($) {
 			len2 = contacts.length;
 			for(k = 0; k < len2; k++){
 				if(contacts[k].id === id){
-					contacts.splice(k, k+1);
+					contacts.splice(k, 1);
+					return;
 				}
 			}
 		}
@@ -332,12 +333,7 @@ var ContactsLib = (function($) {
 			this.create(destList, [removeContact]);
 		}
 		
-		for(i = 0; i < len; i++){
-			if(contacts[i].id === contact.id){
-				contacts.splice(i, 1);
-				return;
-			}
-		}
+		this.removeContact(contact.id);
 	}
 
 	/**
@@ -376,6 +372,10 @@ var ContactsLib = (function($) {
 	}
 
 	Contact.prototype.editContact = function(data){
+		if(data instanceof WorkContact || this instanceof WorkContact){
+			WorkContact.call(this, data);
+			return;
+		}
 		Contact.call(this, data);
 	}
 
@@ -399,8 +399,22 @@ var ContactsLib = (function($) {
 		}, ['color', 'position']);
 		_props(this, obj);
 
+		if(typeof obj.phone === 'string'){ // if phone number is a string and not a New Number then make it one.
+			obj.phone = ContactsLib.PhoneNumber.parse(data.phone);
+		}
+		if(typeof obj.workPhone === 'string'){ // if workPhone number is a string and not a New Number then make it one.
+			obj.workPhone = ContactsLib.PhoneNumber.parse(data.workPhone);
+		}
+		if(typeof obj.mobile === 'string'){ // if mobile number is a string and not a New Number then make it one.
+			obj.mobile = ContactsLib.MobilePhoneNumber.parse(data.mobile);
+		}
+
 		Contact.call(this, data);
 	}
+	// Why is this function is not reachable??
+	WorkContact.prototype.editWorkContact = function(data){
+		WorkContact.call(this, data);
+	};
 
 	_inherit(WorkContact, Contact);
 
@@ -447,6 +461,23 @@ var ContactsLib = (function($) {
         this.id = id || "";
 	}
 	
+	/**
+	 * Convert a Contact from WorkContact to Contact and vice versa
+	 * @param  {Contact/WorkContact} 	contact  [Passing the contact we wish to convert]
+	 * @param  {ContactsList} 			destList [passing the list that contact is going to be placed in after the conversion]
+	 * @return {Contact/WorkContact}    		 [returning the converted contact]
+	 */
+	ContactsList.prototype.convert = function(contact, destList){
+		if(contact instanceof WorkContact){
+			contact = new Contact(contact);
+		}else{
+			contact = new WorkContact(contact);
+		}
+		this.delete(contact.id);
+		destList.add(contact);
+		return contact;
+	}
+
 	ContactsList.prototype.filter = function(callback) {
 		var i, 
 		len = this.contacts.length, 
@@ -470,6 +501,34 @@ var ContactsLib = (function($) {
 		}
 		return result;
 	};
+
+	/**
+	 * Delete a contact by its id
+	 * @param  {Contact.id} id [pass the contacts id]
+	 * @return {[null]}
+	 */
+	ContactsList.prototype.delete = function(id) {
+		var i,
+			contacts = this.contacts,
+			len      = this.contacts.length;
+
+		for(i = 0; i < len; i++){
+			if(contacts[i].id === id){
+				contacts.splice(i, 1);
+				return;
+			}
+		}
+		return null;
+	};	
+
+	/**
+	 * Adding a contact to a list
+	 * @param {Contact} contact [pass the desired Contact's Object]
+	 */
+	ContactsList.prototype.add = function(contact) {
+		this.contacts.push(contact);
+	};
+
 	ContactsList.prototype.find = function(id) {
 		var i,
 			len = this.contacts.length;
