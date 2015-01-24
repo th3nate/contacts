@@ -3,49 +3,49 @@ $(function () {
 	////////////////
 	// Variables //
 	////////////////
-	var $container 	      = $("#contacts"),
-		$form             = $("#contact-form"),
-		$fields           = $form.find("input, textarea, select"),
-		$select           = $form.find("select#group-assign"),
-		$chkBox           = $form.find("input#is-work-contact"),
-		$inp_firstName    = $form.find("#first-name"),
-		$inp_lastName     = $form.find("#last-name"),
-		$inp_birthDate    = $form.find("#birth-date"),
-		$inp_phone        = $form.find("#phone"),
-		$inp_workPhone    = $form.find("#work-phone"),
-		$inp_mobile       = $form.find("#mobile"),
-		$inp_email        = $form.find("#email"),
-		$inp_imageUrl     = $form.find("#image-url"),
-		$inp_facebookPage = $form.find("#facebook-page"),
-		$inp_comments     = $form.find("#comments"),
-		$inp_id   		  = $form.find("#id"),
-		$modal            = $("#contact-modal"),
-        contactId 	      = myBook.getContactId(),
-		orgTitle          = $modal.find("#modal-title").html(),
-		promise           = $.getJSON('data/MOCK_DATA_REGULAR.json'),
+	var $container 	       = $("#contacts"),
+		$form              = $("#contact-form"),
+		$fields            = $form.find("input, textarea, select"),
+		$select            = $form.find("select#group-assign"),
+		$chkBox            = $form.find("input#is-work-contact"),
+		$inputFirstName    = $form.find("#first-name"),
+		$inputLastName     = $form.find("#last-name"),
+		$inputBirthDate    = $form.find("#birth-date"),
+		$inputPhone        = $form.find("#phone"),
+		$inputWorkPhone    = $form.find("#work-phone"),
+		$inputMobile       = $form.find("#mobile"),
+		$inputEmail        = $form.find("#email"),
+		$inputImageUrl     = $form.find("#image-url"),
+		$inputFacebookPage = $form.find("#facebook-page"),
+		$inputComments     = $form.find("#comments"),
+		$inputId           = $form.find("#id"),
+		$modal             = $("#contact-modal"),
+        contactId 	       = myBook.getContactId(),
+		orgTitle           = $modal.find("#modal-title").html(),
+		promise            = $.getJSON('data/MOCK_DATA_REGULAR.json'),
 		isWorkContact,
-		domElWork         = '\
+		domElWork          = '\
 				<input type="text" name="position" id="position" class="form-control input-lg" placeholder="Position" tabindex="12">\
 				<input type="text" name="color" id="color" class="form-control input-lg" placeholder="Color" tabindex="12">\
 				',
-		domElUser         = '<input type="text" name="new-user-list" id="new-user-list" class="form-control input-lg" placeholder="Enter groups name" tabindex="12">';	
+		domElUser          = '<input type="text" name="new-user-list" id="new-user-list" class="form-control input-lg" placeholder="Enter groups name" tabindex="12">';	
 	
 	////////////////////////////////
 	// TODO: Mock data REMOVE     //
 	////////////////////////////////
-	$inp_firstName.val("Nate")
-	$inp_lastName.val("Cook");
-	$inp_birthDate.val("04/12/1978");
-	$inp_phone.val("03-6049741");
-	$inp_workPhone.val("03-6043386");
-	$inp_mobile.val("052-5118833");
-	$inp_email.val("natanel7@gmail.com");
-	$inp_imageUrl.val("http://api.randomuser.me/portraits/men/49.jpg");
-	$inp_facebookPage.val("http://facebook.com");
-	$inp_comments.val("For performance reasons, all icons require a base class and individual icon class. To use, place the following code just about anywhere. Be sure to leave a space between the icon and text for proper padding.");
+	$inputFirstName.val("Nate")
+	$inputLastName.val("Cook");
+	$inputBirthDate.val("04/12/1978");
+	$inputPhone.val("03-6049741");
+	$inputWorkPhone.val("03-6043386");
+	$inputMobile.val("052-5118833");
+	$inputEmail.val("natanel7@gmail.com");
+	$inputImageUrl.val("http://api.randomuser.me/portraits/men/49.jpg");
+	$inputFacebookPage.val("http://facebook.com");
+	$inputComments.val("For performance reasons, all icons require a base class and individual icon class. To use, place the following code just about anywhere. Be sure to leave a space between the icon and text for proper padding.");
 
 	// Update the DOM with the current Contact id
-	$inp_id.val((contactId + 1));
+	$inputId.val((contactId + 1));
 
 	//////////////////////
 	// init checkboxes //
@@ -162,18 +162,18 @@ $(function () {
 			obj = parseContact(myBook.getContact(cid));
 
 			$modalWindow.find('#modal-title').text('Edit: (' + obj.contact.id + ') ' + obj.contact.firstName + ' ' + obj.contact.lastName);
-			$inp_firstName.val(obj.contact.firstName);
-			$inp_lastName.val(obj.contact.lastName);
-			$inp_birthDate.val(obj.contact.birthDate);
-			$inp_phone.val(obj.phone);
-			$inp_workPhone.val(obj.workPhone);
-			$inp_mobile.val(obj.mobile);
-			$inp_email.val(obj.contact.email);
-			$inp_imageUrl.val(obj.contact.imageUrl);
-			$inp_facebookPage.val(obj.contact.facebookPage);
-			$inp_comments.val(obj.contact.comments);
+			$inputFirstName.val(obj.contact.firstName);
+			$inputLastName.val(obj.contact.lastName);
+			$inputBirthDate.val(obj.contact.birthDate);
+			$inputPhone.val(obj.phone);
+			$inputWorkPhone.val(obj.workPhone);
+			$inputMobile.val(obj.mobile);
+			$inputEmail.val(obj.contact.email);
+			$inputImageUrl.val(obj.contact.imageUrl);
+			$inputFacebookPage.val(obj.contact.facebookPage);
+			$inputComments.val(obj.contact.comments);
 			$select.find("option[value='"+obj.contact.listId+"']").prop('selected', true);
-			$inp_id.val(obj.contact.id);
+			$inputId.val(obj.contact.id);
 			
 			if(obj.isWorkContact === true){
 				$chkBox.prop('checked', true);
@@ -188,18 +188,18 @@ $(function () {
 			////////////////////////////////
 			// TODO: Mock data REMOVE     //
 			////////////////////////////////
-			$inp_firstName.val("Nate")
-			$inp_lastName.val("Cook");
-			$inp_birthDate.val("04/12/1978");
-			$inp_phone.val("03-6049741");
-			$inp_workPhone.val("03-6043386");
-			$inp_mobile.val("052-5118833");
-			$inp_email.val("natanel7@gmail.com");
-			$inp_imageUrl.val("http://api.randomuser.me/portraits/men/49.jpg");
-			$inp_facebookPage.val("http://facebook.com");
-			$inp_comments.val("For performance reasons, all icons require a base class and individual icon class. To use, place the following code just about anywhere. Be sure to leave a space between the icon and text for proper padding.");
+			$inputFirstName.val("Nate")
+			$inputLastName.val("Cook");
+			$inputBirthDate.val("04/12/1978");
+			$inputPhone.val("03-6049741");
+			$inputWorkPhone.val("03-6043386");
+			$inputMobile.val("052-5118833");
+			$inputEmail.val("natanel7@gmail.com");
+			$inputImageUrl.val("http://api.randomuser.me/portraits/men/49.jpg");
+			$inputFacebookPage.val("http://facebook.com");
+			$inputComments.val("For performance reasons, all icons require a base class and individual icon class. To use, place the following code just about anywhere. Be sure to leave a space between the icon and text for proper padding.");
 			
-			$inp_id.val((myBook.getContactId() + 1));	
+			$inputId.val((myBook.getContactId() + 1));	
 		}
 	});
 
@@ -277,7 +277,11 @@ $(function () {
 			newList,
 			currList,
 			contact,
-			existingContact;
+			existingContact,
+			contactType,
+			currListObj,
+			tmpList,
+			tmpObjList;
 		
 		/**
 		 * iterate through the serializeArray Objects
@@ -311,13 +315,26 @@ $(function () {
 
         existingContact = myBook.getContact(tmpObj.id);
 
+
 		if(existingContact){ // If Contact already exists, we edit it.
 
-			contact = existingContact;
-			currList = myBook.getById(contact.listId);
-			
+			contactType = (existingContact instanceof ContactsLib.WorkContact) ? true : false; // If contact is of WorkContact Type.
+			contact     = existingContact;
+			currList    = myBook.getById(contact.listId);
+			currListObj = myBook.get(currList);
+			tmpList     = myBook.getById(tmpObj.listId);
+			tmpObjList  = myBook.get(tmpList);
+
+			if(contactType && $chkBox.is(':checked') === false){ // If its a WorkContact and we want to convert it to Contact.
+				contact = currListObj.convert(contact, tmpObjList);
+			}
+			if(!contactType && $chkBox.is(':checked') === true){  // If its a Contact and we want to convert it to WorkContact.
+				contact = currListObj.convert(contact, tmpObjList);
+			}
+			if(contact.listId !== tmpObj.listId){
+				myBook.allocateContact(currList, list, contact);
+			}
 			contact.editContact(tmpObj);
-			myBook.allocateContact(currList, list, contact);
 
 			drawContacts(myBook);
 				
@@ -346,7 +363,7 @@ $(function () {
 			//////////////////////////////////////////////////////////
 			// Update the hidden id input with the highest id + 1 //
 			//////////////////////////////////////////////////////////
-			$inp_id.val((myBook.getContactId() + 1));
+			$inputId.val((myBook.getContactId() + 1));
 
 			/////////////////////////////////////////////////////////
 			// Append the newly created contactElm to the DOM      //
