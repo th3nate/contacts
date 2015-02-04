@@ -5,6 +5,7 @@ $(function () {
 	////////////////
 	var $container 	       = $("#contacts"),
 		$form              = $("#contact-form"),
+		$listWrapper       = $("#contact-lists"),
 		$fields            = $form.find("input, textarea, select"),
 		$select            = $form.find("select#group-assign"),
 		$chkBox            = $form.find("input#is-work-contact"),
@@ -28,7 +29,7 @@ $(function () {
 				<input type="text" name="position" id="position" class="form-control input-lg" placeholder="Position" tabindex="12">\
 				<input type="text" name="color" id="color" class="form-control input-lg" placeholder="Color" tabindex="12">\
 				',
-		domElUser          = '<input type="text" name="new-user-list" id="new-user-list" class="form-control input-lg" placeholder="Enter groups name" tabindex="12">';	
+		domElUser          = '<input type="text" name="newUserList" id="newUserList" class="form-control input-lg" placeholder="Enter groups name" tabindex="12">';	
 	
 	////////////////////////////////
 	// TODO: Mock data REMOVE     //
@@ -45,7 +46,7 @@ $(function () {
 	$inputComments.val("For performance reasons, all icons require a base class and individual icon class. To use, place the following code just about anywhere. Be sure to leave a space between the icon and text for proper padding.");
 
 	// Update the DOM with the current Contact id
-	$inputId.val((contactId + 1));
+	$inputId.val(contactId);
 
 	//////////////////////
 	// init checkboxes //
@@ -199,7 +200,7 @@ $(function () {
 			$inputFacebookPage.val("http://facebook.com");
 			$inputComments.val("For performance reasons, all icons require a base class and individual icon class. To use, place the following code just about anywhere. Be sure to leave a space between the icon and text for proper padding.");
 			
-			$inputId.val((myBook.getContactId() + 1));	
+			$inputId.val(myBook.getContactId());	
 		}
 	});
 
@@ -214,7 +215,7 @@ $(function () {
 			.removeAttr('checked');
 
 		$select.find("option").removeAttr('selected');
-		$form.find("#new-user-list").remove();
+		$form.find("#newUserList").remove();
 		showWorkFields();
 	});
 
@@ -233,18 +234,33 @@ $(function () {
 	// Select element interaction //
 	/////////////////////////////////
 	$select.on('change', function(e) {
-		if($(this).val() == "user" && $("#new-user-list").length <= 0){
+		if($(this).val() == "user" && $("#newUserList").length <= 0){
 			$(this).closest('div').append(domElUser);
 		}else{
-			$(this).closest('div').find("#new-user-list").remove();
+			$(this).closest('div').find("#newUserList").remove();
 		}
 		e.preventDefault();
+	});
+
+	///////////////////////////////
+	// List buttons interaction //
+	///////////////////////////////
+	$listWrapper.on('click', '.list-link', function(e) {
+		var listId = $(this).data("list");
+		drawContacts(myBook, listId);
+		addCheckboxes(); // Init Styled checkboxes
+		//e.preventDefault();
 	});
 
 	/////////////////////////////
 	// build the lists select //
 	/////////////////////////////
 	buildContactsListsSelect($select, myBook);
+
+	/////////////////////////////
+	// build the lists names   //
+	/////////////////////////////
+	buildContactsLists($listWrapper, myBook);
 
 	///////////////////////////////////
 	// Build all available Contacts //
@@ -266,19 +282,19 @@ $(function () {
 			len    = data.length,
 			tmpObj = {},
 			$row   = $("div[data-role='wrapper']"),
-			$inputNewListName = $("#new-user-list"),
+			$inputNewListName = $("#newUserList"),
 			i,
 			key,
 			value,
 			list,
-			id,
-			newId,
+			hash,
 			newContact,
 			newList,
 			currList,
 			contact,
+			converted,
 			existingContact,
-			contactType,
+			workType,
 			currListObj,
 			tmpList,
 			tmpObjList;
@@ -294,7 +310,7 @@ $(function () {
 			 if(key === "groupAssign"){ 
 			 	tmpObj[key] = $select.find(":selected").text();
 			 	if(val["value"] === "user"){ // prevent entry of type 'String' in 'listId' property
-				 	tmpObj["listId"] = (myBook.getListId()+1);
+				 	tmpObj["listId"] = myBook.getListId();
 				 	return;
 			 	}
 			 	tmpObj["listId"] = parseInt(val["value"], 10);
@@ -315,28 +331,47 @@ $(function () {
 
         existingContact = myBook.getContact(tmpObj.id);
 
+		if(window.location.hash){
+			hash = parseInt(window.location.hash.substring(1)); // Puts hash in variable, and removes the # character
+		}
 
 		if(existingContact){ // If Contact already exists, we edit it.
-
-			contactType = (existingContact instanceof ContactsLib.WorkContact) ? true : false; // If contact is of WorkContact Type.
+			workType    = (existingContact instanceof ContactsLib.WorkContact) ? true : false; // If contact is of WorkContact Type.
 			contact     = existingContact;
 			currList    = myBook.getById(contact.listId);
 			currListObj = myBook.get(currList);
-			tmpList     = myBook.getById(tmpObj.listId);
+			tmpList     = myBook.getById(tmpObj.listId) || tmpObj.newUserList;
 			tmpObjList  = myBook.get(tmpList);
 
-			if(contactType && $chkBox.is(':checked') === false){ // If its a WorkContact and we want to convert it to Contact.
-				contact = currListObj.convert(contact, tmpObjList);
+			if(!tmpObjList){
+				tmpObjList = new ContactsLib.ContactsList(tmpList, [], myBook.getListId());
+				myBook.add(tmpObjList);
 			}
-			if(!contactType && $chkBox.is(':checked') === true){  // If its a Contact and we want to convert it to WorkContact.
-				contact = currListObj.convert(contact, tmpObjList);
+			
+			if(workType && $chkBox.is(':checked') === false){ // If its a WorkContact and we want to convert it to Contact.
+				converted = true;
+				contact   = currListObj.convert(contact); // Convert the contact's type (Contact/WorkContact).
+				currListObj.delete(contact.id); // Remove the contact from the old list.
+				tmpObjList.add(contact); // Add the contact to the newly selected list.
 			}
-			if(contact.listId !== tmpObj.listId){
+			if(!workType && $chkBox.is(':checked') === true){  // If its a Contact and we want to convert it to WorkContact.
+				converted = true;
+				contact   = currListObj.convert(contact); // Convert the contact's type (Contact/WorkContact).
+				currListObj.delete(contact.id); // Remove the contact from the old list.
+				tmpObjList.add(contact); // Add the contact to the newly selected list.
+			}
+			
+			if(!converted && contact.listId !== tmpObj.listId){
 				myBook.allocateContact(currList, list, contact);
 			}
-			contact.editContact(tmpObj);
 
-			drawContacts(myBook);
+			if(contact instanceof ContactsLib.WorkContact){
+				contact.editWorkContact(tmpObj);
+			}else{
+				contact.editContact(tmpObj);
+			}
+
+			drawContacts(myBook, hash); // draw the list im currently in by the hash var.
 				
 		}else{ // If it's a new Contact
 			
@@ -349,9 +384,7 @@ $(function () {
 			if (myBook.get(list)) { // If list already exists
 				newList = myBook.create(list, contact);
 			} else {
-				id      = myBook.getListId(); // get the cuurrent highest id
-				newId   = (id+1); 	// Advance the current id by 1
-				newList = new ContactsLib.ContactsList(list, [contact], newId);
+				newList = new ContactsLib.ContactsList(list, [contact], myBook.getListId());
 				myBook.add(newList);
 			}
 
@@ -363,7 +396,7 @@ $(function () {
 			//////////////////////////////////////////////////////////
 			// Update the hidden id input with the highest id + 1 //
 			//////////////////////////////////////////////////////////
-			$inputId.val((myBook.getContactId() + 1));
+			$inputId.val(myBook.getContactId());
 
 			/////////////////////////////////////////////////////////
 			// Append the newly created contactElm to the DOM      //
@@ -381,6 +414,11 @@ $(function () {
 		// Build the Lists <select> //
 		////////////////////////////////
 		buildContactsListsSelect($select, myBook);
+
+		/////////////////////////////
+		// build the lists names   //
+		/////////////////////////////
+		buildContactsLists($listWrapper, myBook);
 
 		//////////////////////////////
 		// Init Styled checkboxes //
