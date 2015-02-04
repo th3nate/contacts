@@ -1,5 +1,5 @@
 /**
- * Build a select element form available 
+ * Build a select element from available 
  * lists in ContactsBook
  * @param  {jQuery} 	$select [the select element to use]
  * @param  {Singeleton} book    [ContactsBook to search lists in]
@@ -28,9 +28,48 @@ function buildContactsListsSelect ($select, book){
 		$select.find('option:last').before(doc);
 	}
 }
+/**
+ * Build a list out of available 
+ * lists in ContactsBook
+ * @param  {jQuery} 	$select [the select element to use]
+ * @param  {Singeleton} book    [ContactsBook to search lists in]
+ * @return {HTML}         		[Returning the $select element filled with options]
+ */
+function buildContactsLists ($elm, book){
+	if(book instanceof ContactsLib.ContactsBook){
+		var lists = Object.keys(book.lists),
+			str = '',
+			i,
+			index,
+			val,
+			doc = $(document.createDocumentFragment()),
+			len = lists.length;
+
+		$elm.find(".list-item").remove(); // Remove all options.
+
+		for(i = 0; i < len; i++){
+			index  = lists[i];
+			val    = book.lists[index];
+			doc.append(
+				$('<span>', { 
+					'class': "list-item label label-success"
+				}).wrapInner(
+					$('<a>', { 
+						'class':     "list-link",
+						'href':      "#"+val.id,
+						'data-list': val.id,
+						'text':      val.name 
+					})
+				)
+			);
+			doc.append("\n"); // just for spacing between each item in the list
+		}
+		$elm.append(doc);
+	}
+}
 function parseContact(contact){
 	var 
-		isWorkContact = (contact.constructor.name === "WorkContact") ? true : false,
+		isWorkContact = (contact instanceof ContactsLib.WorkContact) ? true : false,
 		phone         = (contact.phone.fullNumber !== null) ? phone = contact.phone.fullNumber : phone = contact.phone,
 		workPhone     = (contact.workPhone.fullNumber !== null) ? workPhone = contact.workPhone.fullNumber : workPhone = contact.workPhone,
 		mobile        = (contact.mobile.fullNumber !== null) ? mobile = contact.mobile.fullNumber : mobile = contact.mobile;
@@ -100,10 +139,10 @@ function createContactWidget(contact, book){
 }
 
 /**
- * Build all available contacts
+ * Draw all available contacts
  * @param  {ContactsBook}	book  [The Contacts available inside the book]
  * @return {[String]}             [Returns a string of HTML]
- */
+
 function drawContacts(book, $container){
 	var
 		contacts = book.initContacts(),
@@ -117,7 +156,41 @@ function drawContacts(book, $container){
 	$container.empty();
 
 	for(i = 0; i < len; i++){
-		isWorkContact = (contacts[i].constructor.name === "WorkContact") ? true : false;
+		isWorkContact = (contacts[i] instanceof ContactsLib.WorkContact) ? true : false;
+		contactHTML   = createContactWidget(contacts[i], book, isWorkContact);
+		arrangeContactsDom(contactHTML);
+	}
+}
+*/
+
+/**
+ * Draw all available contacts in a book or a list
+ * @param  {ContactsBook}	book    [The Contacts available inside the book]
+ * @param  {Integer}		listId  [OPTIONAL: the list's id]
+ * @return {[String]}               [Returns a string of HTML]
+ */
+function drawContacts(book, listId, $container){
+	var
+		i,
+		contactHTML,
+		isWorkContact,
+		list = book.getById(listId), // gets the name of the list by its id
+		contacts,
+		len; 
+	
+	if(listId === 0 || listId === undefined){
+		contacts = book.initContacts(); // returns an array of all contacts inside a list
+	}else{
+		contacts = book.initContactsList(list)
+	}
+		len = contacts.length;
+
+	$container = ($container === undefined) ? $container = $("#contacts") : $container;
+	
+	$container.empty();
+
+	for(i = 0; i < len; i++){
+		isWorkContact = (contacts[i] instanceof ContactsLib.WorkContact) ? true : false;
 		contactHTML   = createContactWidget(contacts[i], book, isWorkContact);
 		arrangeContactsDom(contactHTML);
 	}
