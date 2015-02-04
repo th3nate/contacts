@@ -55,14 +55,16 @@ var rndName = "Some List-" + Math.floor((Math.random() * 100) + 1);
 
 var myBook = ContactsLib.ContactsBook.getInstance("My Contacts Book");
 
-var newList = new ContactsLib.ContactsList("Friends", [myContact, myContact2], (myBook.getListId()+1));
-var newList2 = new ContactsLib.ContactsList("Friends", [myWorkContact], (myBook.getListId()+1));
+var newList = new ContactsLib.ContactsList("Friends", [myContact, myContact2], myBook.getListId());
+var newList2 = new ContactsLib.ContactsList("Friends", [myWorkContact], myBook.getListId());
 
 //var myBook2 = ContactsLib.ContactsBook.getInstance();
 //console.log(myBook);
 //console.log(myBook.delete("somelist no. 2"));
 myBook.add(newList);
 myBook.add(newList2);
+//var all = myBook.initContacts();
+
 console.log(myBook);
 
 /* return filtered list
