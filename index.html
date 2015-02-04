@@ -52,10 +52,29 @@
 
 			<!-- Main jumbotron for a primary marketing message or call to action -->
 			<div class="jumbotron">
-				Available groups:
-				<p id="contact-lists">
-					<span class="label label-primary"><a class="list-link" href="#" data-list="0">All</a></span>
-				</p>
+				
+				<div class="row">
+					<div class="col-xs-12 col-sm-6 col-md-6">
+
+						<div class="form-group">
+							<p>Available Lists:</p>
+							<p id="contact-lists">
+								<span class="label label-primary label-success"><a class="list-link" href="#" data-list="0">All</a></span>
+							</p>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-6 col-md-6">
+						<div class="form-group">
+							<p>Move selected contacts to list:</p>
+							<div class="input-group">
+								<span class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
+								<select name="listSelect" id="sort-lists" class="form-control input-md group-select" tabindex="1">
+									<option class="static" value="0">All</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
 				<p>
 					<a href="#" class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#contact-modal">New Contact &raquo;</a>
 					<a href="#" id="get-checked-data" class="btn btn-primary btn-lg" role="button">Get Selected &raquo;</a>

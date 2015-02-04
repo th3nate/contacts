@@ -52,7 +52,7 @@ function buildContactsLists ($elm, book){
 			val    = book.lists[index];
 			doc.append(
 				$('<span>', { 
-					'class': "list-item label label-success"
+					'class': "list-item label label-primary"
 				}).wrapInner(
 					$('<a>', { 
 						'class':     "list-link",
@@ -213,4 +213,19 @@ function arrangeContactsDom(contact, $container, $row){
 	}else{ // If row doesn't exists on page OR items in row exceed 3
 		$container.append('<div class="row" data-role="wrapper">'+contact+'</div>');
 	}
+}
+
+/**
+ * Get the contacts for sorting
+ * @return {Array} Return an array of Contact's id.
+ */
+function getSortItems (){
+	
+	var checkedItems = [];
+	
+	$("#contacts .active").each(function(idx, el) {
+		checkedItems.push($(el).find("a.edit-contact").data('cid'));
+	});
+
+	return checkedItems;
 }

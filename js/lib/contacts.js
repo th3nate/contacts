@@ -360,6 +360,27 @@ var ContactsLib = (function($) {
 	}
 
 	/**
+	 * Move an array of contacts to another between lists
+	 * @param  {[ContactList]} 	destList    [The list to move the contact's to]
+	 * @param  {[Contact]} 		contacts    [The contact to move]
+	 */
+	ContactsBook.prototype.sortContacts = function(destList, contacts){
+		var
+			i,
+			contact,
+			currentList,
+			destList = this.getById(destList),
+			arr      = [],
+			len      = contacts.length;
+
+		for (i = 0; i < len; i++){
+			contact     = this.getContact(contacts[i]);
+			currentList = this.getById(contact.listId);
+			this.allocateContact(currentList, destList, contact);
+		}
+	}
+
+	/**
 	 * Given a ContactsList name and Array of Contacts
 	 * we create a New ContactsList, OR - 
 	 * adding Contact to an existing list

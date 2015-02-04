@@ -6,6 +6,7 @@ $(function () {
 	var $container 	       = $("#contacts"),
 		$form              = $("#contact-form"),
 		$listWrapper       = $("#contact-lists"),
+		$selectSort        = $("select#sort-lists"),
 		$fields            = $form.find("input, textarea, select"),
 		$select            = $form.find("select#group-assign"),
 		$chkBox            = $form.find("input#is-work-contact"),
@@ -25,12 +26,16 @@ $(function () {
 		orgTitle           = $modal.find("#modal-title").html(),
 		promise            = $.getJSON('data/MOCK_DATA_REGULAR.json'),
 		isWorkContact,
+		hash,
 		domElWork          = '\
 				<input type="text" name="position" id="position" class="form-control input-lg" placeholder="Position" tabindex="12">\
 				<input type="text" name="color" id="color" class="form-control input-lg" placeholder="Color" tabindex="12">\
 				',
 		domElUser          = '<input type="text" name="newUserList" id="newUserList" class="form-control input-lg" placeholder="Enter groups name" tabindex="12">';	
 	
+	if(window.location.hash){
+		hash = parseInt(window.location.hash.substring(1)); // Puts hash in variable, and removes the # character
+	}
 	////////////////////////////////
 	// TODO: Mock data REMOVE     //
 	////////////////////////////////
@@ -242,20 +247,62 @@ $(function () {
 		e.preventDefault();
 	});
 
+	function navigation (id) {
+		hash = id; // update the global hash variable.
+		$('a[data-list]')
+			.parent()
+			.removeClass('label-success'); 
+
+		$('a[data-list='+id+']')
+			.click()
+			.parent()
+			.addClass('label-success');
+		
+		window.location = "#"+hash;
+	}
+	/////////////////////////////////
+	// Select element interaction //
+	/////////////////////////////////
+	$selectSort.on('change', function(e) {
+		var 
+			list     = parseInt($(this).val()),
+			contacts = getSortItems();
+		
+		if (contacts.length !== 0) { // if the array is not empty
+			myBook.sortContacts(list, contacts);
+			navigation(list);
+			drawContacts(myBook, hash);
+			addCheckboxes(); // Init Styled checkboxes
+		}
+		e.preventDefault();
+	});
+
 	///////////////////////////////
 	// List buttons interaction //
 	///////////////////////////////
 	$listWrapper.on('click', '.list-link', function(e) {
 		var listId = $(this).data("list");
-		drawContacts(myBook, listId);
+		hash = listId; // update the global hash variable.
+
+		$('a[data-list]').parent().removeClass('label-success'); 
+
+		$('a[data-list='+listId+']').parent().addClass('label-success');
+
+		drawContacts(myBook, listId); // Draw the contacts in the list
 		addCheckboxes(); // Init Styled checkboxes
 		//e.preventDefault();
 	});
 
-	/////////////////////////////
-	// build the lists select //
-	/////////////////////////////
+	
+	/////////////////////////////////////////////
+	// build the lists select inside the form //
+	/////////////////////////////////////////////
 	buildContactsListsSelect($select, myBook);
+
+	/////////////////////////////////////
+	// build the lists select on page //
+	/////////////////////////////////////
+	buildContactsListsSelect($selectSort, myBook);
 
 	/////////////////////////////
 	// build the lists names   //
@@ -287,7 +334,6 @@ $(function () {
 			key,
 			value,
 			list,
-			hash,
 			newContact,
 			newList,
 			currList,
@@ -331,10 +377,6 @@ $(function () {
 
         existingContact = myBook.getContact(tmpObj.id);
 
-		if(window.location.hash){
-			hash = parseInt(window.location.hash.substring(1)); // Puts hash in variable, and removes the # character
-		}
-
 		if(existingContact){ // If Contact already exists, we edit it.
 			workType    = (existingContact instanceof ContactsLib.WorkContact) ? true : false; // If contact is of WorkContact Type.
 			contact     = existingContact;
@@ -372,7 +414,8 @@ $(function () {
 			}
 
 			drawContacts(myBook, hash); // draw the list im currently in by the hash var.
-				
+			navigation(hash);
+
 		}else{ // If it's a new Contact
 			
 			if (!isWorkContact) {
@@ -414,6 +457,11 @@ $(function () {
 		// Build the Lists <select> //
 		////////////////////////////////
 		buildContactsListsSelect($select, myBook);
+
+		/////////////////////////////////////
+		// build the lists select on page //
+		/////////////////////////////////////
+		buildContactsListsSelect($selectSort, myBook);
 
 		/////////////////////////////
 		// build the lists names   //
