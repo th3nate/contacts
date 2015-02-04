@@ -8,6 +8,8 @@ var ContactsLib = (function($) {
 	/////////////////////
 	
 	var 
+		currentListId    = 1, // Holds the current highest list id.
+		currentContactId = 1, // Holds the current highest contact id.
 		/**
 		 * Singletone instance of the ContactsBook class
 		 * @type {ContactsBook}
@@ -128,7 +130,7 @@ var ContactsLib = (function($) {
 
 	function ContactsBook(name) {
 		this.lists = {};
-		this.name = name;
+		this.name  = name;
 	}
     
 	ContactsBook.getInstance = function(name) {
@@ -137,8 +139,9 @@ var ContactsLib = (function($) {
 		}
 		return book;
 	};
+
 	/**
-	 * get the highest list's 'id' available
+	 * get the current list's 'id'
 	 * @return {[Number]}
 	 */
 	ContactsBook.prototype.getListId = function() {
@@ -152,7 +155,7 @@ var ContactsLib = (function($) {
 				num = this.lists[lists[i]].id
 			}
 		}
-		return num;
+		return (num + 1);
 	};
 
 	/**
@@ -165,16 +168,16 @@ var ContactsLib = (function($) {
 			contact,
 			lists = Object.keys(this.lists),
 			contacts,
-			k,
+			j,
 			len = lists.length,
 			len2;
 
 		for(i=0; i<len; i++){
 			contacts = this.lists[lists[i]].contacts;
 			len2 = contacts.length;
-			for(k = 0; k < len2; k++){
-				if(contacts[k].id === id){
-					contact = contacts[k];
+			for(j = 0; j < len2; j++){
+				if(contacts[j].id === id){
+					contact = contacts[j];
 				}
 			}
 		}
@@ -230,7 +233,7 @@ var ContactsLib = (function($) {
 				}
 			}
 		}
-		return num;
+		return (num + 1);
 	};
 	/**
 	 * [Init all available contacts inside a book]
@@ -242,17 +245,36 @@ var ContactsLib = (function($) {
 			arr = [],
 			lists = Object.keys(this.lists),
 			contacts,
-			k,
+			j,
 			len = lists.length,
 			len2;
 
 		for(i=0; i<len; i++){
 			contacts = this.lists[lists[i]].contacts;
 			len2 = contacts.length;
-			for(k = 0; k < len2; k++){
-				arr.push(contacts[k]);
+			for(j = 0; j < len2; j++){
+				arr.push(contacts[j]);
 			}
 		}
+		return arr;
+	}
+
+	/**
+	 * Init all available contacts inside a list
+	 * @param  {[ContactsList]} name [The list to populate]
+	 * @return {[Array]} [Returns an array of contacts]
+	 */
+	ContactsBook.prototype.initContactsList = function(name){
+		var 
+			i,
+			arr      = [],
+			contacts = this.lists[name].contacts,
+			len      = contacts.length;
+
+			for(i = 0; i < len; i++){
+				arr.push(contacts[i]);
+			}
+
 		return arr;
 	}
 
@@ -327,13 +349,14 @@ var ContactsLib = (function($) {
 
 		removeContact = this.getContact(contact.id);
 		
+		this.removeContact(contact.id);
+		
 		if(this.get(destList)){
 			this.create(destList, removeContact);
 		}else{
 			this.create(destList, [removeContact]);
 		}
 		
-		this.removeContact(contact.id);
 	}
 
 	/**
@@ -349,7 +372,7 @@ var ContactsLib = (function($) {
 			this.lists[name].contacts.push(arr);
 			console.info("List already defined, just adding contact.");
 		}else{		
-			this.lists[name] = new ContactsList(name, arr, (this.getListId()+1));
+			this.lists[name] = new ContactsList(name, arr, this.getListId());
 		}
 		return this.lists[name];
 	};
@@ -372,10 +395,6 @@ var ContactsLib = (function($) {
 	}
 
 	Contact.prototype.editContact = function(data){
-		if(data instanceof WorkContact || this instanceof WorkContact){
-			WorkContact.call(this, data);
-			return;
-		}
 		Contact.call(this, data);
 	}
 
@@ -411,12 +430,16 @@ var ContactsLib = (function($) {
 
 		Contact.call(this, data);
 	}
-	// Why is this function is not reachable??
+
+	_inherit(WorkContact, Contact);
+
+	/**
+	 * Edit WorkContact
+	 * @param  {[WorkContact]} data [Pass a WorkContact]
+	 */
 	WorkContact.prototype.editWorkContact = function(data){
 		WorkContact.call(this, data);
 	};
-
-	_inherit(WorkContact, Contact);
 
 	function PhoneNumber(prefix, number) {
 		var fullNumber;
@@ -464,17 +487,14 @@ var ContactsLib = (function($) {
 	/**
 	 * Convert a Contact from WorkContact to Contact and vice versa
 	 * @param  {Contact/WorkContact} 	contact  [Passing the contact we wish to convert]
-	 * @param  {ContactsList} 			destList [passing the list that contact is going to be placed in after the conversion]
 	 * @return {Contact/WorkContact}    		 [returning the converted contact]
 	 */
-	ContactsList.prototype.convert = function(contact, destList){
+	ContactsList.prototype.convert = function(contact){
 		if(contact instanceof WorkContact){
 			contact = new Contact(contact);
 		}else{
 			contact = new WorkContact(contact);
 		}
-		this.delete(contact.id);
-		destList.add(contact);
 		return contact;
 	}
 
