@@ -196,20 +196,25 @@ div[data-group='user'] {
   right: 5px;
   left: auto; }
 
-/* line 174, ../scss/screen.scss */
+/* line 173, ../scss/screen.scss */
+.list-link, .list-link:hover, .list-link:focus {
+  color: white;
+  font-weight: normal; }
+
+/* line 183, ../scss/screen.scss */
 .contact-item input[type="radio"], .contact-item input[type="checkbox"] {
   display: none; }
 
-/* line 179, ../scss/screen.scss */
+/* line 188, ../scss/screen.scss */
 .contact-item .state-icon {
   cursor: pointer; }
 
-/* line 182, ../scss/screen.scss */
+/* line 191, ../scss/screen.scss */
 .comments {
   margin: 10px 0px 0px;
   display: block; }
 
-/* line 186, ../scss/screen.scss */
+/* line 195, ../scss/screen.scss */
 .ui-datepicker {
   z-index: 1000000 !important; }
 

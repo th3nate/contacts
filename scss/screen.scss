@@ -170,6 +170,15 @@ div[data-group='user']{
 	left: auto;
 }
 
+.list-link {
+	color: white;
+	font-weight: normal;
+	&:hover, 
+	&:focus{
+		@extend .list-link;
+	}
+}
+
 .contact-item input{
 	&[type="radio"],
 	&[type="checkbox"]{
