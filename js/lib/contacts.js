@@ -25,6 +25,7 @@ var ContactsLib = (function($) {
 		Validator,
 		fields = [
 			'id',
+			'listId',
 			'firstName',
 			'lastName',
 			'birthDate',
@@ -34,8 +35,7 @@ var ContactsLib = (function($) {
 			'email',
 			'imageUrl',
 			'comments',
-			'facebookPage',
-			'listId'
+			'facebookPage'
 		];
 
 	/**
@@ -369,14 +369,19 @@ var ContactsLib = (function($) {
 			i,
 			contact,
 			currentList,
-			destList = this.getById(destList),
-			arr      = [],
-			len      = contacts.length;
+			destListName = this.getById(destList),
+			arr          = [],
+			len          = contacts.length;
 
 		for (i = 0; i < len; i++){
-			contact     = this.getContact(contacts[i]);
-			currentList = this.getById(contact.listId);
-			this.allocateContact(currentList, destList, contact);
+			contact        = this.getContact(contacts[i]);
+			currentList    = this.getById(contact.listId);
+			//contact.listId = destList;
+			Object.defineProperty(contact, "listId", { // update the contact's listId.
+				value: destList,
+				writable: true
+			});			
+			this.allocateContact(currentList, destListName, contact);
 		}
 	}
 

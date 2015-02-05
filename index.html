@@ -65,7 +65,7 @@
 					</div>
 					<div class="col-xs-12 col-sm-6 col-md-6">
 						<div class="form-group">
-							<p>Move selected contacts to list:</p>
+							<p>Move selected to:</p>
 							<div class="input-group">
 								<span class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
 								<select name="listSelect" id="sort-lists" class="form-control input-md group-select" tabindex="1">
@@ -77,7 +77,7 @@
 				</div>
 				<p>
 					<a href="#" class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#contact-modal">New Contact &raquo;</a>
-					<a href="#" id="get-checked-data" class="btn btn-primary btn-lg" role="button">Get Selected &raquo;</a>
+					<!--a href="#" id="get-checked-data" class="btn btn-primary btn-lg" role="button">Get Selected &raquo;</a-->
 				</p>
 			</div>
 
@@ -346,6 +346,15 @@
 							<input type="hidden" name="id" id="id" />
 
 						</form>
+
+						<div id="loading" class="shy">
+							<div class="progress">
+								<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+									<span class="sr-only">100% Complete</span>
+								</div>
+							</div>
+						</div>
+
 					</div>
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->

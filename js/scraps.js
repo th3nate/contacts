@@ -48,7 +48,7 @@ var myWorkContact = new ContactsLib.WorkContact({
 });
 
 var rndName = "Some List-" + Math.floor((Math.random() * 100) + 1);
-
+//console.log(rndName);
 //console.log(myContact.validate());
 //console.log(myContact);
 //console.log(myWorkContact);

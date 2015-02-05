@@ -22,33 +22,16 @@ $(function () {
 		$inputComments     = $form.find("#comments"),
 		$inputId           = $form.find("#id"),
 		$modal             = $("#contact-modal"),
+		viewLocation	   = 0,
         contactId 	       = myBook.getContactId(),
 		orgTitle           = $modal.find("#modal-title").html(),
-		promise            = $.getJSON('data/MOCK_DATA_REGULAR.json'),
+		randomUser,
 		isWorkContact,
-		hash,
 		domElWork          = '\
 				<input type="text" name="position" id="position" class="form-control input-lg" placeholder="Position" tabindex="12">\
 				<input type="text" name="color" id="color" class="form-control input-lg" placeholder="Color" tabindex="12">\
 				',
-		domElUser          = '<input type="text" name="newUserList" id="newUserList" class="form-control input-lg" placeholder="Enter groups name" tabindex="12">';	
-	
-	if(window.location.hash){
-		hash = parseInt(window.location.hash.substring(1)); // Puts hash in variable, and removes the # character
-	}
-	////////////////////////////////
-	// TODO: Mock data REMOVE     //
-	////////////////////////////////
-	$inputFirstName.val("Nate")
-	$inputLastName.val("Cook");
-	$inputBirthDate.val("04/12/1978");
-	$inputPhone.val("03-6049741");
-	$inputWorkPhone.val("03-6043386");
-	$inputMobile.val("052-5118833");
-	$inputEmail.val("natanel7@gmail.com");
-	$inputImageUrl.val("http://api.randomuser.me/portraits/men/49.jpg");
-	$inputFacebookPage.val("http://facebook.com");
-	$inputComments.val("For performance reasons, all icons require a base class and individual icon class. To use, place the following code just about anywhere. Be sure to leave a space between the icon and text for proper padding.");
+		domElUser          = '<input type="text" name="newUserList" id="newUserList" class="form-control input-lg" placeholder="Enter groups name" tabindex="12">';
 
 	// Update the DOM with the current Contact id
 	$inputId.val(contactId);
@@ -189,21 +172,27 @@ $(function () {
 			}
 
 		}else{ // If we are in a New contact mode.
+
+			$('#loading').show();//Start Preloader Animation
 			$modalWindow.find('#modal-title').html(orgTitle);
 			
 			////////////////////////////////
 			// TODO: Mock data REMOVE     //
 			////////////////////////////////
-			$inputFirstName.val("Nate")
-			$inputLastName.val("Cook");
-			$inputBirthDate.val("04/12/1978");
-			$inputPhone.val("03-6049741");
-			$inputWorkPhone.val("03-6043386");
-			$inputMobile.val("052-5118833");
-			$inputEmail.val("natanel7@gmail.com");
-			$inputImageUrl.val("http://api.randomuser.me/portraits/men/49.jpg");
-			$inputFacebookPage.val("http://facebook.com");
-			$inputComments.val("For performance reasons, all icons require a base class and individual icon class. To use, place the following code just about anywhere. Be sure to leave a space between the icon and text for proper padding.");
+			randomUser = $.getJSON('https://randomapi.com/api/?key=I2V1-YQFA-YHXS-O7VZ&id=oa5thno');
+			randomUser.done(function(data) { // $.Promise
+				$inputFirstName.val(data.results[0].Contact.firstName);
+				$inputLastName.val(data.results[0].Contact.lastName);
+				$inputBirthDate.val(data.results[0].Contact.birthDate);
+				$inputPhone.val(data.results[0].Contact.phone);
+				$inputWorkPhone.val(data.results[0].Contact.workPhone);
+				$inputMobile.val(data.results[0].Contact.mobile);
+				$inputEmail.val(data.results[0].Contact.email);
+				$inputImageUrl.val(data.results[0].Contact.imageUrl);
+				$inputFacebookPage.val(data.results[0].Contact.facebookPage);
+				$inputComments.val(data.results[0].Contact.comments);
+				$("#loading").fadeOut(); // Hide Preloader
+			});
 			
 			$inputId.val(myBook.getContactId());	
 		}
@@ -246,20 +235,7 @@ $(function () {
 		}
 		e.preventDefault();
 	});
-
-	function navigation (id) {
-		hash = id; // update the global hash variable.
-		$('a[data-list]')
-			.parent()
-			.removeClass('label-success'); 
-
-		$('a[data-list='+id+']')
-			.click()
-			.parent()
-			.addClass('label-success');
-		
-		window.location = "#"+hash;
-	}
+	
 	/////////////////////////////////
 	// Select element interaction //
 	/////////////////////////////////
@@ -271,7 +247,7 @@ $(function () {
 		if (contacts.length !== 0) { // if the array is not empty
 			myBook.sortContacts(list, contacts);
 			navigation(list);
-			drawContacts(myBook, hash);
+			drawContacts(myBook, list);
 			addCheckboxes(); // Init Styled checkboxes
 		}
 		e.preventDefault();
@@ -281,16 +257,15 @@ $(function () {
 	// List buttons interaction //
 	///////////////////////////////
 	$listWrapper.on('click', '.list-link', function(e) {
-		var listId = $(this).data("list");
-		hash = listId; // update the global hash variable.
+		var listId   = $(this).data("list");
+		viewLocation = listId; // Update the current list we're viewing.
 
-		$('a[data-list]').parent().removeClass('label-success'); 
+		$('a.list-link').parent().removeClass('label-success'); 
+		$(this).parent().addClass('label-success');
 
-		$('a[data-list='+listId+']').parent().addClass('label-success');
-
-		drawContacts(myBook, listId); // Draw the contacts in the list
+		drawContacts(myBook, viewLocation); // Draw the contacts in the list
 		addCheckboxes(); // Init Styled checkboxes
-		//e.preventDefault();
+		e.preventDefault();
 	});
 
 	
@@ -413,8 +388,7 @@ $(function () {
 				contact.editContact(tmpObj);
 			}
 
-			drawContacts(myBook, hash); // draw the list im currently in by the hash var.
-			navigation(hash);
+			drawContacts(myBook, viewLocation);  // Draw the contacts in the list
 
 		}else{ // If it's a new Contact
 			
@@ -467,6 +441,12 @@ $(function () {
 		// build the lists names   //
 		/////////////////////////////
 		buildContactsLists($listWrapper, myBook);
+
+		//////////////////////////////////////////
+		// Update our navigation buttons for    //
+		// the current location                 //
+		//////////////////////////////////////////
+		navigation(viewLocation);
 
 		//////////////////////////////
 		// Init Styled checkboxes //

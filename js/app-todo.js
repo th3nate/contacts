@@ -28,6 +28,7 @@ function buildContactsListsSelect ($select, book){
 		$select.find('option:last').before(doc);
 	}
 }
+
 /**
  * Build a list out of available 
  * lists in ContactsBook
@@ -67,6 +68,7 @@ function buildContactsLists ($elm, book){
 		$elm.append(doc);
 	}
 }
+
 function parseContact(contact){
 	var 
 		isWorkContact = (contact instanceof ContactsLib.WorkContact) ? true : false,
@@ -82,6 +84,7 @@ function parseContact(contact){
 		mobile:        mobile
 	}
 }
+
 /**
  * Create Contact DOM widget
  * @param  {Contact}  		contact      	[The Contact to draw]
@@ -229,3 +232,20 @@ function getSortItems (){
 
 	return checkedItems;
 }
+
+/**
+ * Update the menu items according to the listId we are in.
+ * @param  {Number} listId [the list id number]
+ */
+function navigation (listId) {
+	viewLocation = listId; // Update the current list we're viewing.
+	$('a[data-list]')
+		.parent()
+		.removeClass('label-success'); 
+
+	$('a[data-list='+listId+']')
+		.click()
+		.parent()
+		.addClass('label-success');
+}
+
