@@ -3,7 +3,12 @@ $(function () {
 	////////////////
 	// Variables //
 	////////////////
-	var $container 	       = $("#contacts"),
+	var 
+		randomUser,
+		isWorkContact,
+		viewLocation	   = 0,
+        contactId 	       = myBook.getNextContactId(),
+		$container 	       = $("#contacts"),
 		$form              = $("#contact-form"),
 		$listWrapper       = $("#contact-lists"),
 		$selectSort        = $("select#sort-lists"),
@@ -22,11 +27,7 @@ $(function () {
 		$inputComments     = $form.find("#comments"),
 		$inputId           = $form.find("#id"),
 		$modal             = $("#contact-modal"),
-		viewLocation	   = 0,
-        contactId 	       = myBook.getContactId(),
 		orgTitle           = $modal.find("#modal-title").html(),
-		randomUser,
-		isWorkContact,
 		domElWork          = '\
 				<input type="text" name="position" id="position" class="form-control input-lg" placeholder="Position" tabindex="12">\
 				<input type="text" name="color" id="color" class="form-control input-lg" placeholder="Color" tabindex="12">\
@@ -194,8 +195,9 @@ $(function () {
 				$("#loading").fadeOut(); // Hide Preloader
 			});
 			
-			$inputId.val(myBook.getContactId());	
+			$inputId.val(myBook.getNextContactId());	
 		}
+		isWorkType(); // reset the isWorkContact var
 	});
 
 	//////////////////////////////////////////////
@@ -213,14 +215,21 @@ $(function () {
 		showWorkFields();
 	});
 
-	///////////////////////////////////
-	// Checkbox element interaction //
-	///////////////////////////////////
-	$chkBox.on('change', function() {
+	//////////////////////////////////////////
+	// Toggle the isWorkContact global var //
+	//////////////////////////////////////////
+	function isWorkType(){
 		isWorkContact = false;
 		if ($chkBox.is(':checked')) {
 			isWorkContact = true;
 		}
+	}
+
+	///////////////////////////////////
+	// Checkbox element interaction //
+	///////////////////////////////////
+	$chkBox.on('change', function() {
+		isWorkType();
 		showWorkFields();
 	});
 
@@ -257,16 +266,30 @@ $(function () {
 	// List buttons interaction //
 	///////////////////////////////
 	$listWrapper.on('click', '.list-link', function(e) {
-		var listId   = $(this).data("list");
+		var 
+			listId   = $(this).data("list"),
+			orgValue = $(this).text();
 		viewLocation = listId; // Update the current list we're viewing.
 
 		$('a.list-link').parent().removeClass('label-success'); 
 		$(this).parent().addClass('label-success');
 
+		$(this).editable({
+			mode: 'popup',
+			toggle: 'dblclick',
+			type: 'text',
+			title: 'Edit Lists name',
+			success: function(response, newValue) {
+				//myBook.rename(orgValue, newValue);
+				console.log(newValue); //update backbone model
+			}
+		});		
+
 		drawContacts(myBook, viewLocation); // Draw the contacts in the list
 		addCheckboxes(); // Init Styled checkboxes
 		e.preventDefault();
 	});
+
 
 	
 	/////////////////////////////////////////////
@@ -331,7 +354,7 @@ $(function () {
 			 if(key === "groupAssign"){ 
 			 	tmpObj[key] = $select.find(":selected").text();
 			 	if(val["value"] === "user"){ // prevent entry of type 'String' in 'listId' property
-				 	tmpObj["listId"] = myBook.getListId();
+				 	tmpObj["listId"] = myBook.getNextListId();
 				 	return;
 			 	}
 			 	tmpObj["listId"] = parseInt(val["value"], 10);
@@ -361,7 +384,7 @@ $(function () {
 			tmpObjList  = myBook.get(tmpList);
 
 			if(!tmpObjList){
-				tmpObjList = new ContactsLib.ContactsList(tmpList, [], myBook.getListId());
+				tmpObjList = new ContactsLib.ContactsList(tmpList, [], myBook.getNextListId());
 				myBook.add(tmpObjList);
 			}
 			
@@ -399,9 +422,9 @@ $(function () {
 			}
 
 			if (myBook.get(list)) { // If list already exists
-				newList = myBook.create(list, contact);
+				newList = myBook.create(list, [contact]);
 			} else {
-				newList = new ContactsLib.ContactsList(list, [contact], myBook.getListId());
+				newList = new ContactsLib.ContactsList(list, [contact], myBook.getNextListId());
 				myBook.add(newList);
 			}
 
@@ -413,7 +436,7 @@ $(function () {
 			//////////////////////////////////////////////////////////
 			// Update the hidden id input with the highest id + 1 //
 			//////////////////////////////////////////////////////////
-			$inputId.val(myBook.getContactId());
+			$inputId.val(myBook.getNextContactId());
 
 			/////////////////////////////////////////////////////////
 			// Append the newly created contactElm to the DOM      //

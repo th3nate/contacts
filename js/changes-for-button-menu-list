@@ -1,0 +1,87 @@
+//--->APP-TO DO.JS 
+
+/**
+ * Build a list out of available 
+ * lists in ContactsBook
+ * @param  {jQuery} 	$select [the select element to use]
+ * @param  {Singeleton} book    [ContactsBook to search lists in]
+ * @return {HTML}         		[Returning the $select element filled with options]
+ */
+function buildContactsLists ($elm, book){
+	if(book instanceof ContactsLib.ContactsBook){
+		var lists = Object.keys(book.lists),
+			str = '',
+			i,
+			index,
+			val,
+			doc = $(document.createDocumentFragment()),
+			len = lists.length;
+
+		$elm.find(".list-item").remove(); // Remove all options.
+
+		for(i = 0; i < len; i++){
+			index  = lists[i];
+			val = book.lists[index];
+			doc.append($('<div>', {
+				'class': "btn-group list-item"
+			}).wrapInner($('<button>', {
+				'class': "list-link btn btn-primary",
+				'href': "#" + val.id,
+				'data-list': val.id,
+				'text': val.name
+			})).append($('<button>', {
+				'class': "list-edit btn btn-primary",
+				'aria-expanded': false,
+				'data-edit': val.id
+			}).append('<span class="caret"></span>\n<span class="sr-only">Edit list</span>')));
+			doc.append("\n"); // just for spacing between each item in the list
+		}
+		$elm.append(doc);
+	}
+}
+
+
+/**
+ * Update the menu items according to the listId we are in.
+ * @param  {Number} listId [the list id number]
+ */
+function navigation (listId) {
+	viewLocation = listId; // Update the current list we're viewing.
+	$('.list-link, .list-edit')
+		.removeClass('btn-success'); 
+
+	$('[data-list='+listId+']')
+		.click()
+		.addClass('btn-success').next().addClass('btn-success');
+
+}
+
+
+//--->APP.JS 
+	///////////////////////////////
+	// List buttons interaction //
+	///////////////////////////////
+	$listWrapper.on('click', '.list-link', function(e) {
+		var listId   = $(this).data("list");
+		viewLocation = listId; // Update the current list we're viewing.
+
+		$('.list-link, .list-edit').removeClass('btn-success'); 
+		$(this).addClass('btn-success').next().addClass('btn-success');
+
+		drawContacts(myBook, viewLocation); // Draw the contacts in the list
+		addCheckboxes(); // Init Styled checkboxes
+		e.preventDefault();
+	});
+
+//--->INDEX.HTML 
+	<div id="contact-lists">
+
+		<div class="btn-group">
+			<button type="button" class="list-link btn btn-primary btn-success" data-list="0">All</button>
+			<button type="button" class="list-edit btn btn-primary btn-success" data-toggle="dropdown" aria-expanded="false">
+				<span class="caret"></span>
+				<span class="sr-only">Edit list</span>
+			</button>
+		</div><!-- /btn-group -->
+
+	</div>

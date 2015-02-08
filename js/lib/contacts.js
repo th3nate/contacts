@@ -3,27 +3,15 @@
 
 var ContactsLib = (function($) {
 	'use strict';
-	/////////////////////
-	// Private fields //
-	/////////////////////
 	
+	// Private fields
 	var 
-		currentListId    = 1, // Holds the current highest list id.
-		currentContactId = 1, // Holds the current highest contact id.
-		/**
-		 * Singletone instance of the ContactsBook class
-		 * @type {ContactsBook}
-		 */
-		book,
-		/**
-		 * @type {Object} Library namespace container
-		 */
-		ContactsLib = {},
-		/**
-		 * @type {Object} Static object for contacts validations
-		 */
-		Validator,
-		fields = [
+		currentListId    = 1,	// @type {Number} Holds the current highest list id.
+		currentContactId = 1,	// @type {Number} Holds the current highest contact id.
+		book,					// @type {ContactsBook} Singletone instance of the ContactsBook class
+		ContactsLib = {},		// @type {Object} Library namespace container 
+		Validator,				// @type {Object} Static object for contacts validations
+		fields = [				// @type {Array} Array of allowable fields for our contacts
 			'id',
 			'listId',
 			'firstName',
@@ -38,17 +26,13 @@ var ContactsLib = (function($) {
 			'facebookPage'
 		];
 
-	/**
-	 * Object.defineProperties native function wrapper
-	 * makes.. 
-	 * @param  {Object} object to modify	
-	 * @param  {[type]} 
-	 * @return {[type]}
-	 */
+	// init a given objects props 
+	// with the Object.defineProperties function
 	function _props(obj, properties) {
 		var defaultConfig = {
 				enumerable: true,
-				configurable: true
+				configurable: true,
+				writable: true
 			},
 			resultConfig = {},
 			key = '',
@@ -68,7 +52,7 @@ var ContactsLib = (function($) {
 		Object.defineProperties(obj, resultConfig);
 	}
 
-	// shortcut
+	// shortcut for initialize an object's properties by our allowable list of properties (fieldsList)
 	function _initProperties(objData, fieldsList) {
 		var i,
 			attr,
@@ -85,12 +69,13 @@ var ContactsLib = (function($) {
 		return obj;
 	}
 
-	// shortcut
+	// shortcut function to allow inheritance
 	function _inherit(childConstructor, parentConstructor) {
 		childConstructor.prototype = Object.create(parentConstructor.prototype);
 		childConstructor.prototype.constructor = childConstructor;
 	}
 
+	// shortcut function to parse phone numbers
 	function _parseNumber(numStr) {
 		var newstr = numStr.replace(/\D/ig, ''), // Remove all NON digits
 			num = {
@@ -102,6 +87,7 @@ var ContactsLib = (function($) {
 		return num;
 	}
 
+	// Validator object
 	Validator = {
 		email: function(email) {
 			var re = /^\w+@[a-z_]+?\.[a-z]{2,3}$/i;
@@ -128,11 +114,21 @@ var ContactsLib = (function($) {
 		}
 	};
 
+	/**
+	 * Create a ContactsBook from given data
+	 * @param {String} name [The name of our ContactsBook]
+	 * @return {Contact} [returning a new ContactsBook instance]
+	 */
 	function ContactsBook(name) {
 		this.lists = {};
 		this.name  = name;
 	}
     
+    /**
+     * [getInstance description]
+	 * @param {String} name [The name of our ContactsBook]
+     * @return {ContactsBook (singleton)} [returning a one and only new ContactsBook instance - Singleton Object]
+     */
 	ContactsBook.getInstance = function(name) {
 		if (book == null) {
 			book = new ContactsBook(name);
@@ -141,10 +137,10 @@ var ContactsLib = (function($) {
 	};
 
 	/**
-	 * get the current list's 'id'
-	 * @return {[Number]}
+	 * get the next lists 'id'
+	 * @return {[Number]} [Return the highest id available plus 1]
 	 */
-	ContactsBook.prototype.getListId = function() {
+	ContactsBook.prototype.getNextListId = function() {
 		var i,
 			num = 0,
 			lists = Object.keys(this.lists),
@@ -212,10 +208,10 @@ var ContactsLib = (function($) {
 	}
 
 	/**
-	 * get the highest contact's 'id' available
-	 * @return {[Number]}
+	 * get the next contacts 'id'
+	 * @return {[Number]} [Return the highest id available plus 1]
 	 */
-	ContactsBook.prototype.getContactId = function() {
+	ContactsBook.prototype.getNextContactId = function() {
 		var i,
 			num = 0,
 			lists = Object.keys(this.lists),
@@ -235,6 +231,7 @@ var ContactsLib = (function($) {
 		}
 		return (num + 1);
 	};
+
 	/**
 	 * [Init all available contacts inside a book]
 	 * @return {[Array]} [returns array with all contacts no matter in which list.]
@@ -279,9 +276,9 @@ var ContactsLib = (function($) {
 	}
 
 	/**
-	 * [get description]
-	 * @param  {[type]}
-	 * @return {mixed}
+	 * Check if list exsits by passing its name
+	 * @param  {String} listName [The name of the list to check]
+	 * @return {mixed}           [if the list exists return its name, if not return null]
 	 */
 	ContactsBook.prototype.get = function(listName) {
 		if (listName in this.lists) {
@@ -289,6 +286,24 @@ var ContactsLib = (function($) {
 		}
 		return null;
 	};
+
+	/**
+	 * Rename a list
+	 * @param  {String} listName [The name of the list to check]
+	 * @return {mixed}           [if the list exists return its name, if not return null]
+	 */
+	ContactsBook.prototype.rename = function(listName, renameText) {
+		if (this.get(listName)) {
+			//this.lists[listName].name = renameText;
+		}
+		return null;
+	};
+
+	/**
+	 * Check if list exsits by passing its name
+	 * @param  {Number} id [The id of the list to check]
+	 * @return {mixed}     [if the list exists return its name, if not return null]
+	 */
 	ContactsBook.prototype.getById = function(id) {
 		var
 			i,
@@ -305,6 +320,12 @@ var ContactsLib = (function($) {
 
 		return null;
 	};
+
+	/**
+	 * Delete a list by passing its name
+	 * @param  {String} listName [Pass the name of the list to delete]
+	 * @return {null}
+	 */
 	ContactsBook.prototype.delete = function(listName) {
 		var list = this.get(listName);
 		if (list !== null) {
@@ -314,6 +335,11 @@ var ContactsLib = (function($) {
 		console.warn('The list you have requested was not found.');
 	};
 
+	/**
+	 * Add a ContactsList to the book
+	 * @param {ContactsList}	contactsList [Pass the ContactsList]
+	 * @param {Boolean}			override     [If true we overwrite exsisting list]
+	 */
 	ContactsBook.prototype.add = function(contactsList, override) {
 		if (!(contactsList instanceof ContactsList)) {
 			console.warn("Can add only ContactsList instances to ContactsBook" + 
@@ -342,25 +368,16 @@ var ContactsLib = (function($) {
 	 */
 	ContactsBook.prototype.allocateContact = function(currentList, destList, contact){
 		var
-			removeContact,
 			i,
 			contacts = this.lists[currentList].contacts,
 			len      = this.lists[currentList].contacts.length;
-
-		removeContact = this.getContact(contact.id);
 		
 		this.removeContact(contact.id);
-		
-		if(this.get(destList)){
-			this.create(destList, removeContact);
-		}else{
-			this.create(destList, [removeContact]);
-		}
-		
+		this.create(destList, [contact]);
 	}
 
 	/**
-	 * Move an array of contacts to another between lists
+	 * Move an array of contacts between lists
 	 * @param  {[ContactList]} 	destList    [The list to move the contact's to]
 	 * @param  {[Contact]} 		contacts    [The contact to move]
 	 */
@@ -376,11 +393,7 @@ var ContactsLib = (function($) {
 		for (i = 0; i < len; i++){
 			contact        = this.getContact(contacts[i]);
 			currentList    = this.getById(contact.listId);
-			//contact.listId = destList;
-			Object.defineProperty(contact, "listId", { // update the contact's listId.
-				value: destList,
-				writable: true
-			});			
+			contact.listId = destList; // Update the Contact's listId property
 			this.allocateContact(currentList, destListName, contact);
 		}
 	}
@@ -394,15 +407,20 @@ var ContactsLib = (function($) {
 	 * @return {[ContactsList]}      [Returning a list]
 	 */
 	ContactsBook.prototype.create = function(name, arr) {
-		if (this.get(name) !== null) {
-			this.lists[name].contacts.push(arr);
-			console.info("List already defined, just adding contact.");
+		if (this.get(name) !== null) { // if the list exists
+			this.lists[name].contacts = this.lists[name].contacts.concat(arr); // adding array of contacts (can be array of one) into exsisting array of contacts with Array.concat
+			console.info("List already defined, just adding contact/s.");
 		}else{		
-			this.lists[name] = new ContactsList(name, arr, this.getListId());
+			this.lists[name] = new ContactsList(name, arr, this.getNextListId());
 		}
 		return this.lists[name];
 	};
 
+	/**
+	 * Create a contact from given data
+	 * @param {Object} data [Object containing the fields of the contact]
+	 * @return {Contact} [returning a new Contact instance]
+	 */
 	function Contact(data) {
 
 		var obj = _initProperties(data, fields);
@@ -420,10 +438,18 @@ var ContactsLib = (function($) {
 		_props(this, obj);
 	}
 
+	/**
+	 * Edit a contact by passing object with its new fields
+	 * @param  {Object} data [Object containing the fields of the contact]
+	 */
 	Contact.prototype.editContact = function(data){
 		Contact.call(this, data);
 	}
 
+	/**
+	 * Validator for validating input fields
+	 * @return {Array} [Return an array of resulted validation]
+	 */
 	Contact.prototype.validate = function() {
 		var result          = [];
 		result.phone        = Validator.phone(this.phone);
@@ -436,6 +462,11 @@ var ContactsLib = (function($) {
 		return result;
 	};
 
+	/**
+	 * Create a work contact from given data
+	 * @param {Object} data [Object containing the fields of the contact]
+	 * @return {WorkContact} [returning a new WorkContact instance]
+	 */
 	function WorkContact(data) {
 
 		var obj = _initProperties({
@@ -457,16 +488,23 @@ var ContactsLib = (function($) {
 		Contact.call(this, data);
 	}
 
+	// Allow inheritance
 	_inherit(WorkContact, Contact);
 
 	/**
-	 * Edit WorkContact
-	 * @param  {[WorkContact]} data [Pass a WorkContact]
+	 * Edit a work contact by passing object with its new fields
+	 * @param  {Object} data [Object containing the fields of the contact]
 	 */
 	WorkContact.prototype.editWorkContact = function(data){
 		WorkContact.call(this, data);
 	};
 
+	/**
+	 * Create a PhoneNumber type object
+	 * @param {String} prefix 
+	 * @param {String} number 
+	 * @return {PhoneNumber} [returning a new PhoneNumber instance]
+	 */
 	function PhoneNumber(prefix, number) {
 		var fullNumber;
 
@@ -484,26 +522,51 @@ var ContactsLib = (function($) {
 		});
 	}
 
+	/**
+	 * Given a phone number we remove unwanted charecters
+	 * @param  {String} phoneString [Pass the phone number]
+	 * @return {PhoneNumber}        [returning a new PhoneNumber instance]
+	 */
 	PhoneNumber.parse = function(phoneString) {
 		var num = _parseNumber.call(this, phoneString);
 		return new PhoneNumber(num.prefix, num.number);
 	};
 
+	// Set the default prefix length
 	PhoneNumber.PREFIX_LENGTH = 2;
 
+	/**
+	 * Create a MobilePhoneNumber type object
+	 * @param {String} prefix 
+	 * @param {String} number 
+	 * @return {MobilePhoneNumber} [returning a new MobilePhoneNumber instance]
+	 */
 	function MobilePhoneNumber(prefix, number) {
 		PhoneNumber.call(this, prefix, number);
 	}
 
+	// Allow inheritance
 	_inherit(MobilePhoneNumber, PhoneNumber);
 
+	/**
+	 * Given a phone number we remove unwanted charecters
+	 * @param  {String} phoneString [Pass the phone number]
+	 * @return {MobilePhoneNumber}        [returning a new MobilePhoneNumber instance]
+	 */
 	MobilePhoneNumber.parse = function(mobilePhoneString) {
 		var num = _parseNumber.call(this, mobilePhoneString);
 		return new MobilePhoneNumber(num.prefix, num.number);
 	};
 
+	// Set the default prefix length
 	MobilePhoneNumber.PREFIX_LENGTH = 3;
 
+	/**
+	 * Create a ContactsList type object
+	 * @param {String} 	name    	[The contacts list name]
+	 * @param {Array} 	contacts 	[Array of Contacts (Optional)]
+	 * @param {Number} 	id      	[The id of the list (Optional)]
+	 */
 	function ContactsList(name, contacts, id) {
 		this.name = name;
 		this.contacts = (contacts instanceof Array) ? contacts : [];
@@ -512,8 +575,8 @@ var ContactsLib = (function($) {
 	
 	/**
 	 * Convert a Contact from WorkContact to Contact and vice versa
-	 * @param  {Contact/WorkContact} 	contact  [Passing the contact we wish to convert]
-	 * @return {Contact/WorkContact}    		 [returning the converted contact]
+	 * @param  {Contact/WorkContact} contact [Passing the contact we wish to convert]
+	 * @return {Contact/WorkContact}		[returning the converted contact]
 	 */
 	ContactsList.prototype.convert = function(contact){
 		if(contact instanceof WorkContact){
@@ -524,6 +587,11 @@ var ContactsLib = (function($) {
 		return contact;
 	}
 
+	/**
+	 * A method for filtering a contact list by specified function
+	 * @param  {Function} callback [Passing a function to filter by]
+	 * @return {Array}             [Returning a filtered array]
+	 */
 	ContactsList.prototype.filter = function(callback) {
 		var i, 
 		len = this.contacts.length, 
@@ -535,6 +603,12 @@ var ContactsLib = (function($) {
 		}
 		return result;
 	};
+
+	/**
+	 * A method for removing a contact from a list by specified function
+	 * @param  {Function} callback [Passing a function to filter by]
+	 * @return {Array}             [Returning a filtered array]
+	 */
 	ContactsList.prototype.removeBy = function(callback) {
 		var i, 
 		len = this.contacts.length, 
@@ -546,6 +620,21 @@ var ContactsLib = (function($) {
 			}
 		}
 		return result;
+	};
+
+	/**
+	 * A method for finding a contact in a list by specified function
+	 * @param  {Function} 	callback [Passing a function to filter by]
+	 * @return {Contact/WorkContact} [Returning the contact]
+	 */
+	ContactsList.prototype.findBy = function(callback) {
+		var i,
+			len = this.contacts.length;
+		for (i = 0; i < len; i++) {
+			if (callback(this.contacts[i], i, this)) {
+				return this.contacts[i];
+			}
+		}
 	};
 
 	/**
@@ -575,6 +664,11 @@ var ContactsLib = (function($) {
 		this.contacts.push(contact);
 	};
 
+	/**
+	 * Find a contact in a list
+	 * @param {Number} 				id 	[pass the desired Contact's id]
+	 * @return {Contact/WorkContact} 	[Return the Contact]
+	 */
 	ContactsList.prototype.find = function(id) {
 		var i,
 			len = this.contacts.length;
@@ -584,16 +678,8 @@ var ContactsLib = (function($) {
 			}
 		}
 	};
-	ContactsList.prototype.findBy = function(callback) {
-		var i,
-			len = this.contacts.length;
-		for (i = 0; i < len; i++) {
-			if (callback(this.contacts[i], i, this)) {
-				return this.contacts[i];
-			}
-		}
-	};
 
+	// Make our functions accessible outside the library
 	ContactsLib.ContactsBook      = ContactsBook;
 	ContactsLib.Contact           = Contact;
 	ContactsLib.WorkContact       = WorkContact;
@@ -604,35 +690,3 @@ var ContactsLib = (function($) {
 	return ContactsLib;
 
 }(jQuery));
-
-/*
-var arr = [];
-arr.push(new ContactsLib.Contact(...));
-arr.push(new ContactsLib.Contact(...));
-arr.push(new ContactsLib.Contact(...));
-arr.push(new ContactsLib.Contact(...));
-arr.push(new ContactsLib.Contact(...));
-arr.push(new ContactsLib.Contact(...));
-arr.push(new ContactsLib.Contact(...));
-arr.push(new ContactsLib.Contact(...));
-arr.push(new ContactsLib.Contact(...));
-arr.push(new ContactsLib.Contact(...));
-arr.push(new ContactsLib.Contact(...));
-arr.push(new ContactsLib.Contact(...));
-
-arr.filter(function (contact, index, arrObj) {
-	return contact.name.charAt(0).toLowerCase() !== 'a'
-});
-/////
-// Inside Array //
-/////
-Array.prototype.filter = function (callback) {
-	var i, len, result = [];
-	for (i = 0, len = this.length; i < len; i++) {
-		if (callback(this[i], i, this)) {
-			result.push(this[i]);
-		}
-	}
-	return result;
-};
-*/
