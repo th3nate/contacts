@@ -242,6 +242,17 @@ div[data-group='user'] {
     width: 40%;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5); }
 
+/* line 221, ../scss/screen.scss */
+.popover-title {
+  color: black; }
+
+/* line 225, ../scss/screen.scss */
+.list-delete span {
+  color: white;
+  font-style: normal;
+  border: 0px none;
+  font-size: 12px; }
+
 /*======================================================
 	END Contacts List
 	======================================================*/

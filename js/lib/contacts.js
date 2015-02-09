@@ -290,11 +290,17 @@ var ContactsLib = (function($) {
 	/**
 	 * Rename a list
 	 * @param  {String} listName [The name of the list to check]
+	 * @param  {String} newName  [The name of the new list]
 	 * @return {mixed}           [if the list exists return its name, if not return null]
 	 */
-	ContactsBook.prototype.rename = function(listName, renameText) {
+	ContactsBook.prototype.rename = function(listName, newName) {
 		if (this.get(listName)) {
-			//this.lists[listName].name = renameText;
+			var 
+				list    = this.lists[listName],
+				oldList = this.get(listName);
+
+			this.create(newName, list.contacts, oldList.id); // creating the new list
+			this.delete(listName); // delete the old list itself
 		}
 		return null;
 	};
@@ -404,14 +410,16 @@ var ContactsLib = (function($) {
 	 * adding Contact to an existing list
 	 * @param  {[ContactsList]} name [pass a ContactsList name]
 	 * @param  {[Array]} 		arr  [pass an array of Contacts]
+	 * @param  {[Number]} 		id   [pass an id of the list (Optional)]
 	 * @return {[ContactsList]}      [Returning a list]
 	 */
-	ContactsBook.prototype.create = function(name, arr) {
+	ContactsBook.prototype.create = function(name, arr, id) {
+		id = id || this.getNextListId();
 		if (this.get(name) !== null) { // if the list exists
 			this.lists[name].contacts = this.lists[name].contacts.concat(arr); // adding array of contacts (can be array of one) into exsisting array of contacts with Array.concat
 			console.info("List already defined, just adding contact/s.");
 		}else{		
-			this.lists[name] = new ContactsList(name, arr, this.getNextListId());
+			this.lists[name] = new ContactsList(name, arr, id);
 		}
 		return this.lists[name];
 	};
@@ -652,6 +660,21 @@ var ContactsLib = (function($) {
 				contacts.splice(i, 1);
 				return;
 			}
+		}
+		return null;
+	};	
+
+	/**
+	 * Delete all contacts inside a list
+	 * @return {[null]}
+	 */
+	ContactsList.prototype.deleteAll = function() {
+		var i,
+			contacts = this.contacts,
+			len      = this.contacts.length;
+
+		for(i = 0; i < len; i++){
+			contacts.pop(i);
 		}
 		return null;
 	};	

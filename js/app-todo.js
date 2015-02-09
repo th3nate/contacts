@@ -61,7 +61,7 @@ function buildContactsLists ($elm, book){
 						'data-list': val.id,
 						'text':      val.name 
 					})
-				)
+				).prepend('<a href="#" class="list-delete" aria-label="Delete list" role="button" data-toggle="modal" data-target="#modal-delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>\n')
 			);
 			doc.append("\n"); // just for spacing between each item in the list
 		}
@@ -181,7 +181,7 @@ function drawContacts(book, listId, $container){
 		contacts,
 		len; 
 	
-	if(listId === 0 || listId === undefined){
+	if(listId === 0 || listId === undefined || list === null){
 		contacts = book.initContacts(); // returns an array of all contacts inside a list
 	}else{
 		contacts = book.initContactsList(list)
@@ -238,6 +238,7 @@ function getSortItems (){
  * @param  {Number} listId [the list id number]
  */
 function navigation (listId) {
+
 	viewLocation = listId; // Update the current list we're viewing.
 	$('a[data-list]')
 		.parent()

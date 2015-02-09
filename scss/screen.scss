@@ -218,6 +218,18 @@ div[data-group='user']{
 		box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
 	}
 }
+.popover-title {
+	color: black;
+}
+.list-delete {
+	span {
+		color: white;
+		font-style: normal;
+		border: 0px none;
+		font-size: 12px;
+	}
+}
+
 /*======================================================
 	END Contacts List
 	======================================================*/

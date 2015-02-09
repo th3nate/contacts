@@ -6,6 +6,8 @@ $(function () {
 	var 
 		randomUser,
 		isWorkContact,
+		listIdToDelete,
+		listNameToDelete,
 		viewLocation	   = 0,
         contactId 	       = myBook.getNextContactId(),
 		$container 	       = $("#contacts"),
@@ -27,6 +29,7 @@ $(function () {
 		$inputComments     = $form.find("#comments"),
 		$inputId           = $form.find("#id"),
 		$modal             = $("#contact-modal"),
+		$modalDelete       = $('#modal-delete'),
 		orgTitle           = $modal.find("#modal-title").html(),
 		domElWork          = '\
 				<input type="text" name="position" id="position" class="form-control input-lg" placeholder="Position" tabindex="12">\
@@ -63,10 +66,10 @@ $(function () {
 				
 				$widget.find('.state-icon').on('click', function () {
 					$input.prop('checked', !$input.is(':checked'));
-					updateDisplay();
+					updateCheckBoxes();
 				});
 
-				function updateDisplay() {
+				function updateCheckBoxes() {
 					var isChecked = $input.is(':checked') ? 'on' : 'off';
 						
 					$widget.find('.state-icon').attr('class', 'pos-icon state-icon '+settings[type][isChecked].icon);
@@ -79,9 +82,47 @@ $(function () {
 					.addClass(isChecked);
 				}
 				
-				updateDisplay();
+				updateCheckBoxes();
 			}
 		});
+	}
+
+	////////////////////////////////////////////////
+	// Control for Form "select" element options //
+	////////////////////////////////////////////////
+	function showWorkFields(){
+
+		var	isWorkContactChk = ($chkBox.is(':checked')) ? true : false;
+
+		if(isWorkContactChk && $("#position").length <= 0){
+			$select.closest('div').append(domElWork);
+		}else{
+			$select.closest('div').find("#position, #color").remove();
+		}
+	}
+
+	//////////////////////////////////////////
+	// Toggle the isWorkContact global var //
+	//////////////////////////////////////////
+	function isWorkType(){
+		isWorkContact = false;
+		if ($chkBox.is(':checked')) {
+			isWorkContact = true;
+		}
+	}
+
+	////////////////////////////////////////////////////////////////
+	// Wrapper function to update the current view after changes //
+	////////////////////////////////////////////////////////////////
+	function updateDisplay(list){
+		viewLocation = list || viewLocation; // if passed a list argument use it, else use global viewLocation var
+
+		buildContactsListsSelect($select, myBook);		// build the lists select inside the form
+		buildContactsListsSelect($selectSort, myBook);	// build the lists select on page				
+		buildContactsLists($listWrapper, myBook);		// build the lists names
+		drawContacts(myBook, viewLocation);				// Draw the contacts in the list
+		addCheckboxes();								// Init Styled checkboxes
+		navigation(viewLocation);						// Update our navigation buttons for the current location
 	}
 
 	//////////////////////////////////////////////////////////
@@ -123,20 +164,6 @@ $(function () {
 		dateFormat: "dd/mm/yy",
 		showAnim: "slideDown"
 	});
-
-	////////////////////////////////////////////////
-	// Control for Form "select" element options //
-	////////////////////////////////////////////////
-	function showWorkFields(){
-
-		var	isWorkContactChk = ($chkBox.is(':checked')) ? true : false;
-
-		if(isWorkContactChk && $("#position").length <= 0){
-			$select.closest('div').append(domElWork);
-		}else{
-			$select.closest('div').find("#position, #color").remove();
-		}
-	}
 
 	//////////////////////////////////////////////
 	// Control for modal interaction : Show     //
@@ -215,16 +242,6 @@ $(function () {
 		showWorkFields();
 	});
 
-	//////////////////////////////////////////
-	// Toggle the isWorkContact global var //
-	//////////////////////////////////////////
-	function isWorkType(){
-		isWorkContact = false;
-		if ($chkBox.is(':checked')) {
-			isWorkContact = true;
-		}
-	}
-
 	///////////////////////////////////
 	// Checkbox element interaction //
 	///////////////////////////////////
@@ -255,9 +272,7 @@ $(function () {
 		
 		if (contacts.length !== 0) { // if the array is not empty
 			myBook.sortContacts(list, contacts);
-			navigation(list);
-			drawContacts(myBook, list);
-			addCheckboxes(); // Init Styled checkboxes
+			updateDisplay(list); // Update our view
 		}
 		e.preventDefault();
 	});
@@ -274,14 +289,20 @@ $(function () {
 		$('a.list-link').parent().removeClass('label-success'); 
 		$(this).parent().addClass('label-success');
 
-		$(this).editable({
+		// Init x-editable (for in-place editing of lists names)
+		$(this).not('.no-edit').editable({
 			mode: 'popup',
 			toggle: 'dblclick',
 			type: 'text',
-			title: 'Edit Lists name',
+			title: 'Rename list',
+			validate: function(value) {
+				if($.trim(value) == '') {
+					return 'This field is required';
+				}
+			},
 			success: function(response, newValue) {
-				//myBook.rename(orgValue, newValue);
-				console.log(newValue); //update backbone model
+				myBook.rename(orgValue, newValue); // Rename the list
+				updateDisplay(); // Update our view
 			}
 		});		
 
@@ -290,32 +311,35 @@ $(function () {
 		e.preventDefault();
 	});
 
+	// Delete list - Buttons interaction
+	$listWrapper.on('click', '.list-delete', function(e) { 
 
+		listIdToDelete   = $(this).parent().find('.list-link').data("list");
+		listNameToDelete = $(this).parent().find('.list-link').text();
 	
-	/////////////////////////////////////////////
-	// build the lists select inside the form //
-	/////////////////////////////////////////////
-	buildContactsListsSelect($select, myBook);
-
-	/////////////////////////////////////
-	// build the lists select on page //
-	/////////////////////////////////////
-	buildContactsListsSelect($selectSort, myBook);
-
-	/////////////////////////////
-	// build the lists names   //
-	/////////////////////////////
-	buildContactsLists($listWrapper, myBook);
-
-	///////////////////////////////////
-	// Build all available Contacts //
-	///////////////////////////////////
-	drawContacts(myBook);
+		e.preventDefault();
+	});
 	
-	///////////////////////////
-	// Init addCheckboxes() //
-	///////////////////////////
-	addCheckboxes();
+	//////////////////////////////////
+	// Delete list - Modal on open //
+	//////////////////////////////////
+	$modalDelete.on('show.bs.modal', function (e) { // On modal open
+		$(this).find('.modal-body').html('Are you sure you want to delete <strong>'+listNameToDelete+'</strong>?<br />This will also delete all associated contacts.');
+	});
+
+	/////////////////////////////////////////////////////
+	// Delete list - Delete Button (Inside the modal) //
+	/////////////////////////////////////////////////////
+	$('#delete-btn').on('click', function(e) {
+		myBook.delete(listNameToDelete);
+		
+		updateDisplay(); // Update our view
+		navigation(0); // (Override the above updateDisplay) go to 'All' view
+		$modalDelete.modal('hide');	// Close the modal
+		e.preventDefault();
+	});
+
+	updateDisplay(); // Update our view
 
 	//////////////////
 	// Form submit //
@@ -450,31 +474,10 @@ $(function () {
 		///////////////////////////////////////
 		$modal.modal('hide');
 		
-		////////////////////////////////
-		// Build the Lists <select> //
-		////////////////////////////////
-		buildContactsListsSelect($select, myBook);
-
-		/////////////////////////////////////
-		// build the lists select on page //
-		/////////////////////////////////////
-		buildContactsListsSelect($selectSort, myBook);
-
-		/////////////////////////////
-		// build the lists names   //
-		/////////////////////////////
-		buildContactsLists($listWrapper, myBook);
-
-		//////////////////////////////////////////
-		// Update our navigation buttons for    //
-		// the current location                 //
-		//////////////////////////////////////////
-		navigation(viewLocation);
-
-		//////////////////////////////
-		// Init Styled checkboxes //
-		//////////////////////////////
-		addCheckboxes();
+		///////////////////////
+		// Update our view //
+		///////////////////////
+		updateDisplay(); 
 
 		////////////////////////////////////////
 		// Prevent Default browser Behavior //
