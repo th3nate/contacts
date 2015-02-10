@@ -250,3 +250,27 @@ function navigation (listId) {
 		.addClass('label-success');
 }
 
+// Validator object
+formValidation = {
+	email: function(email) {
+		var re = /^\w+@[a-z_]+?\.[a-z]{2,3}$/i;
+		return (typeof email === 'string' && re.test(email));
+	},
+	phone: function(phone) {
+		var re = /^(05[0-478]|0[2-489]|077)(?:-*)(\d{7})$/mg;
+		return (typeof phone === 'string' && re.test(phone));
+	},
+	url: function(url) {
+		var re = /((?:https\:\/\/)|(?:http\:\/\/)|(?:www\.))?([a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(?:\??)[a-zA-Z0-9\-\._\?\,\'\/\\\+&%\$#\=~]+)/ig;
+		return (typeof url === 'string' && re.test(url));
+	},
+	imageUrl: function(imageUrl) {
+		var re = /^(http\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(?:\/\S*)?(?:[a-zA-Z0-9_])+\.(?:jpg|jpeg|gif|png))$/;
+		return (typeof imageUrl === 'string' && re.test(imageUrl));
+	},
+	mobilePhone: function(mobilePhone) {
+		var re = /^(05[0-478]|0[2-489]|077)(?:-*)(\d{7})$/mg;
+		return (typeof mobilePhone === 'string' && re.test(mobilePhone));
+	}
+};
+

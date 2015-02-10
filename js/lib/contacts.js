@@ -459,7 +459,7 @@ var ContactsLib = (function($) {
 	 * @return {Array} [Return an array of resulted validation]
 	 */
 	Contact.prototype.validate = function() {
-		var result          = [];
+		var result          = {};
 		result.phone        = Validator.phone(this.phone);
 		result.workPhone    = Validator.phone(this.workPhone);
 		result.mobile       = Validator.mobilePhone(this.mobile);
@@ -709,6 +709,7 @@ var ContactsLib = (function($) {
 	ContactsLib.PhoneNumber       = PhoneNumber;
 	ContactsLib.MobilePhoneNumber = MobilePhoneNumber;
 	ContactsLib.ContactsList      = ContactsList;
+	ContactsLib.Validator         = Validator;
 
 	return ContactsLib;
 

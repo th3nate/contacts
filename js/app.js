@@ -40,6 +40,70 @@ $(function () {
 	// Update the DOM with the current Contact id
 	$inputId.val(contactId);
 
+	// Validator Object - referance to DOM elements and error messages
+	formElementsMap = {
+		'inputPhone': {
+			el:  $inputPhone,
+			msg: 'Please enter a valid phone number'
+		},
+		'inputWorkPhone': {
+			el:  $inputWorkPhone,
+			msg: 'Please enter a valid work phone number'
+		},
+		'inputMobile': {
+			el:  $inputMobile,
+			msg: 'Please enter a valid mobile number'
+		},
+		'inputEmail': {
+			el:  $inputEmail,
+			msg: 'Please enter a valid email address'
+		},
+		'inputImageUrl': {
+			el:  $inputImageUrl,
+			msg: 'Please enter a valid image url'
+		},
+		'inputFacebookPage': {
+			el:  $inputFacebookPage,
+			msg: 'Please enter a valid page url'
+		}
+	};
+
+	/////////////////////////////
+	// Validate form function //
+	/////////////////////////////
+	function validateForm() {
+		var 
+			result = {},
+			errNum = 0;
+
+		// Reset all error class on fields
+		$form.find('.form-group').removeClass('has-error');
+
+		result['inputPhone']        = (formValidation.phone($inputPhone.val()) !== true) ? false : true;
+		result['inputWorkPhone']    = (formValidation.phone($inputWorkPhone.val()) !== true) ? false : true;
+		result['inputMobile']       = (formValidation.mobilePhone($inputMobile.val()) !== true) ? false : true;
+		result['inputEmail']        = (formValidation.email($inputEmail.val()) !== true) ? false : true;
+		result['inputImageUrl']     = (formValidation.imageUrl($inputImageUrl.val()) !== true) ? false : true;
+		result['inputFacebookPage'] = (formValidation.url($inputFacebookPage.val()) !== true) ? false : true;
+
+		$.each(result, function(elm, val) {
+			if (val === false) {
+				formElementsMap[elm].el // the field
+				.popover({content: formElementsMap[elm].msg, placement: 'top'}) // enable bootstrap's popover.js
+				.closest('.form-group').addClass('has-error'); // attach an error class
+
+				formElementsMap[elm].el.popover('show'); // show the popover
+				errNum++; // count number of errors
+			}else{
+				formElementsMap[elm].el.popover('destroy'); // hide the popover
+			}
+		});
+
+		if (errNum === 0){
+			return true;
+		}
+	}
+
 	//////////////////////
 	// init checkboxes //
 	//////////////////////
@@ -174,6 +238,11 @@ $(function () {
 			button       = $(e.relatedTarget), // Button that triggered the modal
 			cid     	 = button.data('cid'), // Extract info from data-* attributes
 			$modalWindow = $(this);
+
+		
+		$form.on('keyup', $fields, function(e) { // Enable form validation on key press
+			validateForm();
+		});
 
 		if(cid >= 0){ // If we are in Edit mode.
 			obj = parseContact(myBook.getContact(cid));
@@ -352,6 +421,7 @@ $(function () {
 			tmpObj = {},
 			$row   = $("div[data-role='wrapper']"),
 			$inputNewListName = $("#newUserList"),
+			v,
 			i,
 			key,
 			value,
@@ -399,85 +469,92 @@ $(function () {
 
         existingContact = myBook.getContact(tmpObj.id);
 
-		if(existingContact){ // If Contact already exists, we edit it.
-			workType    = (existingContact instanceof ContactsLib.WorkContact) ? true : false; // If contact is of WorkContact Type.
-			contact     = existingContact;
-			currList    = myBook.getById(contact.listId);
-			currListObj = myBook.get(currList);
-			tmpList     = myBook.getById(tmpObj.listId) || tmpObj.newUserList;
-			tmpObjList  = myBook.get(tmpList);
+		v             = validateForm();
 
-			if(!tmpObjList){
-				tmpObjList = new ContactsLib.ContactsList(tmpList, [], myBook.getNextListId());
-				myBook.add(tmpObjList);
+		if (v) { // If passed form input validation
+
+
+			if(existingContact){ // If Contact already exists, we edit it.
+				workType      = (existingContact instanceof ContactsLib.WorkContact) ? true : false; // If contact is of WorkContact Type.
+				contact       = existingContact;
+				currList      = myBook.getById(contact.listId);
+				currListObj   = myBook.get(currList);
+				tmpList       = myBook.getById(tmpObj.listId) || tmpObj.newUserList;
+				tmpObjList    = myBook.get(tmpList);
+				
+				if(!tmpObjList){ // if no such list we create it
+					tmpObjList = new ContactsLib.ContactsList(tmpList, [], myBook.getNextListId());
+					myBook.add(tmpObjList);
+				}
+				
+				if(workType && $chkBox.is(':checked') === false){ // If its a WorkContact and we want to convert it to Contact.
+					converted = true;
+					contact   = currListObj.convert(contact); // Convert the contact's type (Contact/WorkContact).
+					currListObj.delete(contact.id); // Remove the contact from the old list.
+					tmpObjList.add(contact); // Add the contact to the newly selected list.
+				}
+				if(!workType && $chkBox.is(':checked') === true){  // If its a Contact and we want to convert it to WorkContact.
+					converted = true;
+					contact   = currListObj.convert(contact); // Convert the contact's type (Contact/WorkContact).
+					currListObj.delete(contact.id); // Remove the contact from the old list.
+					tmpObjList.add(contact); // Add the contact to the newly selected list.
+				}
+				
+				if(!converted && contact.listId !== tmpObj.listId){
+					myBook.allocateContact(currList, list, contact);
+				}
+
+				if(contact instanceof ContactsLib.WorkContact){
+					contact.editWorkContact(tmpObj);
+				}else{
+					contact.editContact(tmpObj);
+				}
+
+				drawContacts(myBook, viewLocation);  // Draw the contacts in the list
+
+			}else{ // If it's a new Contact
+				
+				if (!isWorkContact) {
+					contact = new ContactsLib.Contact(tmpObj);
+				} else {
+					contact = new ContactsLib.WorkContact(tmpObj);
+				}
+
+				if (myBook.get(list)) { // If list already exists
+					newList = myBook.create(list, [contact]);
+				} else {
+					newList = new ContactsLib.ContactsList(list, [contact], myBook.getNextListId());
+					myBook.add(newList);
+				}
+
+				///////////////////////////////////////////
+				// Create the HTML for the new contact //
+				///////////////////////////////////////////
+				contactElm = createContactWidget(contact, myBook);
+
+				//////////////////////////////////////////////////////////
+				// Update the hidden id input with the highest id + 1 //
+				//////////////////////////////////////////////////////////
+				$inputId.val(myBook.getNextContactId());
+
+				/////////////////////////////////////////////////////////
+				// Append the newly created contactElm to the DOM      //
+				/////////////////////////////////////////////////////////		
+				arrangeContactsDom(contactElm, $container, $row);
+
 			}
+	        
+			///////////////////////////////////////
+			// Close modal window after submit //
+			///////////////////////////////////////
+			$modal.modal('hide');
 			
-			if(workType && $chkBox.is(':checked') === false){ // If its a WorkContact and we want to convert it to Contact.
-				converted = true;
-				contact   = currListObj.convert(contact); // Convert the contact's type (Contact/WorkContact).
-				currListObj.delete(contact.id); // Remove the contact from the old list.
-				tmpObjList.add(contact); // Add the contact to the newly selected list.
-			}
-			if(!workType && $chkBox.is(':checked') === true){  // If its a Contact and we want to convert it to WorkContact.
-				converted = true;
-				contact   = currListObj.convert(contact); // Convert the contact's type (Contact/WorkContact).
-				currListObj.delete(contact.id); // Remove the contact from the old list.
-				tmpObjList.add(contact); // Add the contact to the newly selected list.
-			}
-			
-			if(!converted && contact.listId !== tmpObj.listId){
-				myBook.allocateContact(currList, list, contact);
-			}
+			///////////////////////
+			// Update our view //
+			///////////////////////
+			updateDisplay(); 
 
-			if(contact instanceof ContactsLib.WorkContact){
-				contact.editWorkContact(tmpObj);
-			}else{
-				contact.editContact(tmpObj);
-			}
-
-			drawContacts(myBook, viewLocation);  // Draw the contacts in the list
-
-		}else{ // If it's a new Contact
-			
-			if (!isWorkContact) {
-				contact = new ContactsLib.Contact(tmpObj);
-			} else {
-				contact = new ContactsLib.WorkContact(tmpObj);
-			}
-
-			if (myBook.get(list)) { // If list already exists
-				newList = myBook.create(list, [contact]);
-			} else {
-				newList = new ContactsLib.ContactsList(list, [contact], myBook.getNextListId());
-				myBook.add(newList);
-			}
-
-			///////////////////////////////////////////
-			// Create the HTML for the new contact //
-			///////////////////////////////////////////
-			contactElm = createContactWidget(contact, myBook);
-
-			//////////////////////////////////////////////////////////
-			// Update the hidden id input with the highest id + 1 //
-			//////////////////////////////////////////////////////////
-			$inputId.val(myBook.getNextContactId());
-
-			/////////////////////////////////////////////////////////
-			// Append the newly created contactElm to the DOM      //
-			/////////////////////////////////////////////////////////		
-			arrangeContactsDom(contactElm, $container, $row);
-
-		}
-        
-		///////////////////////////////////////
-		// Close modal window after submit //
-		///////////////////////////////////////
-		$modal.modal('hide');
-		
-		///////////////////////
-		// Update our view //
-		///////////////////////
-		updateDisplay(); 
+		} // End if validation
 
 		////////////////////////////////////////
 		// Prevent Default browser Behavior //
