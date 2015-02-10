@@ -253,11 +253,11 @@ function navigation (listId) {
 // Validator object
 formValidation = {
 	email: function(email) {
-		var re = /^\w+@[a-z_]+?\.[a-z]{2,3}$/i;
+		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		return (typeof email === 'string' && re.test(email));
 	},
 	phone: function(phone) {
-		var re = /^(05[0-478]|0[2-489]|077)(?:-*)(\d{7})$/mg;
+		var re = /^(05[0-478]|0[2-9]|077)(?:-*)(\d{7})$/mg;
 		return (typeof phone === 'string' && re.test(phone));
 	},
 	url: function(url) {
@@ -273,4 +273,3 @@ formValidation = {
 		return (typeof mobilePhone === 'string' && re.test(mobilePhone));
 	}
 };
-
