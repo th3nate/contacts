@@ -269,7 +269,7 @@ formValidation = {
 		return (typeof imageUrl === 'string' && re.test(imageUrl));
 	},
 	mobilePhone: function(mobilePhone) {
-		var re = /^(05[0-478]|0[2-489]|077)(?:-*)(\d{7})$/mg;
+		var re = /^(05[0-8]|0[2-489]|077)(?:-*)(\d{7})$/mg;
 		return (typeof mobilePhone === 'string' && re.test(mobilePhone));
 	}
 };

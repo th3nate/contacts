@@ -1,15 +1,15 @@
-// DOM ready
-$(function () {
-	////////////////
-	// Variables //
-	////////////////
+$(function () {// DOM ready
+
+	//////////////////////
+	// Global Variables //
+	//////////////////////
 	var 
 		randomUser,
 		isWorkContact,
 		listIdToDelete,
 		listNameToDelete,
 		viewLocation	   = 0,
-        contactId 	       = myBook.getNextContactId(),
+	    contactId 	       = myBook.getNextContactId(),
 		$container 	       = $("#contacts"),
 		$form              = $("#contact-form"),
 		$listWrapper       = $("#contact-lists"),
@@ -32,39 +32,72 @@ $(function () {
 		$modalDelete       = $('#modal-delete'),
 		orgTitle           = $modal.find("#modal-title").html(),
 		domElWork          = '\
-				<input type="text" name="position" id="position" class="form-control input-lg" placeholder="Position" tabindex="12">\
-				<input type="text" name="color" id="color" class="form-control input-lg" placeholder="Color" tabindex="12">\
+				<input type="text" name="position" id="position" class="form-control input-lg validate" placeholder="Position" tabindex="12">\
+				<input type="text" name="color" id="color" class="form-control input-lg validate" placeholder="Color" tabindex="12">\
 				',
-		domElUser          = '<input type="text" name="newUserList" id="newUserList" class="form-control input-lg" placeholder="Enter groups name" tabindex="12">';
+		domElUser          = '<input type="text" name="newUserList" id="newUserList" class="form-control input-lg validate" placeholder="Enter list name" tabindex="12" value="">';
 
-	// Update the DOM with the current Contact id
+	/////////////////////////////////////////////////
+	// Update the DOM with the current Contact id //
+	/////////////////////////////////////////////////
 	$inputId.val(contactId);
 
-	// Validator Object - referance to DOM elements and error messages
+	//////////////////////////////////////////////////
+	// Validator object 							//
+	// Reference to DOM elements and error messages //
+	//////////////////////////////////////////////////
 	formElementsMap = {
-		'inputPhone': {
+		'firstName': {
+			el:  $inputFirstName,
+			msg: 'Please enter a first name'
+		},
+		'lastName': {
+			el:  $inputLastName,
+			msg: 'Please enter a last name'
+		},
+		'birthDate': {
+			el:  $inputBirthDate,
+			msg: 'Please select a DOB'
+		},
+		'phone': {
 			el:  $inputPhone,
 			msg: 'Please enter a valid phone number'
 		},
-		'inputWorkPhone': {
+		'workPhone': {
 			el:  $inputWorkPhone,
 			msg: 'Please enter a valid work phone number'
 		},
-		'inputMobile': {
+		'mobile': {
 			el:  $inputMobile,
 			msg: 'Please enter a valid mobile number'
 		},
-		'inputEmail': {
+		'email': {
 			el:  $inputEmail,
 			msg: 'Please enter a valid email address'
 		},
-		'inputImageUrl': {
+		'imageUrl': {
 			el:  $inputImageUrl,
 			msg: 'Please enter a valid image url'
 		},
-		'inputFacebookPage': {
+		'facebookPage': {
 			el:  $inputFacebookPage,
 			msg: 'Please enter a valid page url'
+		},
+		'groupAssign': {
+			el:  $select,
+			msg: 'Please select a list, or create a new one'
+		},
+		'newUserList': {
+			el:  '',
+			msg: 'Please enter a name for your new list'
+		},
+		'position': {
+			el:  '',
+			msg: 'Please enter a position'
+		},
+		'color': {
+			el:  '',
+			msg: 'Please enter a color'
 		}
 	};
 
@@ -74,29 +107,47 @@ $(function () {
 	function validateForm() {
 		var 
 			result = {},
-			errNum = 0;
+			errNum = 0,
+			killPopoverElement;
 
 		// Reset all error class on fields
 		$form.find('.form-group').removeClass('has-error');
 
-		result['inputPhone']        = (formValidation.phone($inputPhone.val()) !== true) ? false : true;
-		result['inputWorkPhone']    = (formValidation.phone($inputWorkPhone.val()) !== true) ? false : true;
-		result['inputMobile']       = (formValidation.mobilePhone($inputMobile.val()) !== true) ? false : true;
-		result['inputEmail']        = (formValidation.email($inputEmail.val()) !== true) ? false : true;
-		result['inputImageUrl']     = (formValidation.imageUrl($inputImageUrl.val()) !== true) ? false : true;
-		result['inputFacebookPage'] = (formValidation.url($inputFacebookPage.val()) !== true) ? false : true;
+		result['firstName']    = ($inputFirstName.val() === "") ? false : true;
+		result['lastName']     = ($inputLastName.val() === "") ? false : true;
+		result['birthDate']    = ($inputBirthDate.val() === "") ? false : true;
+		result['phone']        = (formValidation.phone($inputPhone.val()) !== true) ? false : true;
+		result['workPhone']    = (formValidation.phone($inputWorkPhone.val()) !== true) ? false : true;
+		result['mobile']       = (formValidation.mobilePhone($inputMobile.val()) !== true) ? false : true;
+		result['email']        = (formValidation.email($inputEmail.val()) !== true) ? false : true;
+		result['imageUrl']     = (formValidation.imageUrl($inputImageUrl.val()) !== true) ? false : true;
+		result['facebookPage'] = (formValidation.url($inputFacebookPage.val()) !== true) ? false : true;
+		result['groupAssign']  = ($select.val() === "") ? false : true;
+		
+		if ($form.find('input#newUserList').length > 0) { // if this input exists on form then add it to our validation object
+			formElementsMap['newUserList'].el = $form.find('input#newUserList');
+			result['newUserList'] = ($form.find('input#newUserList').val() === "") ? false : true;
+		}
 
-		$.each(result, function(elm, val) {
-			if (val === false) {
-				formElementsMap[elm].el // the field
-				.popover({content: formElementsMap[elm].msg, placement: 'top'}) // enable bootstrap's popover.js
-				.closest('.form-group').addClass('has-error'); // attach an error class
-
-				formElementsMap[elm].el.popover('show'); // show the popover
-				errNum++; // count number of errors
-			}else{
-				formElementsMap[elm].el.popover('destroy'); // hide the popover
+		$.each(result, function(elm, val) { // loop through our 'result' validation object
+			if (formElementsMap[elm].el.hasClass('validate')) {  // only run on elements that have .validate class
+				if (val === false) { // if validation fails
+					if (elm === 'groupAssign') { // if its a select element
+						formElementsMap[elm].el // the field
+						.popover({content: formElementsMap[elm].msg, trigger: 'focus', container: 'body', placement: 'top'}) // enable bootstrap's popover.js
+						.closest('.form-group').addClass('has-error'); // attach an error class
+					}else{ // if a regular input
+						formElementsMap[elm].el // the field
+						.popover({content: formElementsMap[elm].msg, container: 'body', placement: 'top'}) // enable bootstrap's popover.js
+						.closest('.form-group').addClass('has-error'); // attach an error class
+					}
+					formElementsMap[elm].el.popover('show'); // show the popover
+					errNum++; // count number of errors
+				}else{
+					formElementsMap[elm].el.popover('destroy'); // kill the popover
+				}
 			}
+
 		});
 
 		if (errNum === 0){
@@ -104,9 +155,75 @@ $(function () {
 		}
 	}
 
-	//////////////////////
-	// init checkboxes //
-	//////////////////////
+	/////////////////////////////
+	// Validate form function //
+	/////////////////////////////
+	function validateField(field) {
+		var 
+			result    = {},
+			errNum    = 0,
+			validate  = field.hasClass('validate');
+			fieldName = field.attr('name');
+
+		if (validate) { // only run on elements that have .validate class
+
+			// Reset all error class on fields and kill popover
+			field.closest('.form-group').removeClass('has-error');
+			if (formElementsMap[fieldName].el.popover){
+				formElementsMap[fieldName].el.popover('destroy');
+			}
+			if (fieldName === 'phone') {
+				result[fieldName] = (formValidation.phone(field.val()) !== true) ? false : true;
+			}
+			else if (fieldName === 'workPhone') {
+				result[fieldName] = (formValidation.phone(field.val()) !== true) ? false : true;
+			}
+			else if (fieldName === 'mobile') {
+				result[fieldName] = (formValidation.mobilePhone(field.val()) !== true) ? false : true;
+			}
+			else if (fieldName === 'email') {
+				result[fieldName] = (formValidation.email(field.val()) !== true) ? false : true;
+			}
+			else if (fieldName === 'imageUrl') {
+				result[fieldName] = (formValidation.imageUrl(field.val()) !== true) ? false : true;
+			}
+			else if (fieldName === 'facebookPage') {
+				result[fieldName] = (formValidation.url(field.val()) !== true) ? false : true;
+			} 
+			else if (fieldName === 'newUserList') {
+				formElementsMap['newUserList'].el = $form.find('input#newUserList');
+				result[fieldName] = (field.val() === "") ? false : true;
+			} 
+			else {	
+				result[fieldName] = (field.val() === "") ? false : true;
+			}
+
+			if (result[fieldName] === false) { // if validation fails
+				if (fieldName === 'groupAssign') { // if its a select element
+					formElementsMap[fieldName].el // the field
+					.popover({content: formElementsMap[fieldName].msg, container: 'body', trigger: 'focus', placement: 'top'}) // enable bootstrap's popover.js
+					.closest('.form-group').addClass('has-error'); // attach an error class
+				} else {
+					formElementsMap[fieldName].el // the field
+					.popover({content: formElementsMap[fieldName].msg, container: 'body', placement: 'top'}) // enable bootstrap's popover.js
+					.closest('.form-group').addClass('has-error'); // attach an error class
+				}
+
+				formElementsMap[fieldName].el.popover('show'); // show the popover
+				return false;
+
+			} else {
+				if (formElementsMap[fieldName].el.popover){ // if the popover exsists
+					formElementsMap[fieldName].el.popover('destroy'); // kill the popover
+				}
+			}
+		}
+		return true;
+	}
+
+	///////////////////////
+	// Styled Checkboxes //
+	///////////////////////
 	function addCheckboxes(){
         
 		$('.contact-item').each(function () {
@@ -190,7 +307,8 @@ $(function () {
 	}
 
 	//////////////////////////////////////////////////////////
-	// get items data on click and write it to DOM element //
+	// TODO: For testing - REMOVE 							//
+	// get items data on click and write it to DOM element  //
 	//////////////////////////////////////////////////////////
 	$('#get-checked-data').on('click', function(e) {
 		
@@ -214,12 +332,10 @@ $(function () {
 		e.preventDefault(); 
 	});
 
-	////////////////////
-	// init Tooltips //
-	////////////////////
-	$('body').tooltip({
-		selector: '[data-toggle="tooltip"], [data-tooltip="true"]'
-	});
+	//////////////////////////////
+	// init BootStrap Tooltips //
+	//////////////////////////////
+	$('body').tooltip({selector: '[data-toggle="tooltip"], [data-tooltip="true"]'});
 
 	//////////////////////////////////
 	// init jquery UI - DatePicker //
@@ -239,15 +355,26 @@ $(function () {
 			cid     	 = button.data('cid'), // Extract info from data-* attributes
 			$modalWindow = $(this);
 
-		
-		$form.on('keyup', $fields, function(e) { // Enable form validation on key press
-			validateForm();
-		});
+		$form[0].reset(); // resetting the form before applying data
 
 		if(cid >= 0){ // If we are in Edit mode.
 			obj = parseContact(myBook.getContact(cid));
 
+			if ($form.find('#delete-contact').length <= 0) { // Attach a Delete Button
+				$form.prepend('<button data-delete="'+obj.contact.id+'" id="delete-contact" type="button" class="btn btn-danger pull-right btn-md"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete Contact</button>');
+			}
 			$modalWindow.find('#modal-title').text('Edit: (' + obj.contact.id + ') ' + obj.contact.firstName + ' ' + obj.contact.lastName);
+			
+			// Delete Contact - Delete Button
+			$('button').on('click',$('[attr=data-delete'), function(e) {
+				var contactId = parseInt($(e.target).attr('data-delete'));
+				
+				myBook.removeContact(contactId); // Delete the contact by its id
+				updateDisplay();				// Update our view
+				$modalWindow.modal('hide');			// Close the modal
+				e.preventDefault();
+			});
+
 			$inputFirstName.val(obj.contact.firstName);
 			$inputLastName.val(obj.contact.lastName);
 			$inputBirthDate.val(obj.contact.birthDate);
@@ -267,7 +394,6 @@ $(function () {
 				$form.find("#position").val(obj.contact.position);
 				$form.find("#color").val(obj.contact.color);
 			}
-
 		}else{ // If we are in a New contact mode.
 
 			$('#loading').show();//Start Preloader Animation
@@ -301,6 +427,16 @@ $(function () {
 	//////////////////////////////////////////////
 	$modal.on('hide.bs.modal', function (e) {
 		
+		if ($form.find('#delete-contact').length > 0) { // Remove the Delete Contact Button if available
+			$form.find('#delete-contact').remove();
+		}
+		
+		if ($fields.popover){ // if the popover exsists
+			$fields.popover('destroy'); // kill the popover
+		}
+
+		$form.find('.form-group').removeClass('has-error');
+		
 		$form.find("input, textarea")
 			.not(':button, :submit, :reset, :hidden')
 			.val('')
@@ -308,6 +444,7 @@ $(function () {
 
 		$select.find("option").removeAttr('selected');
 		$form.find("#newUserList").remove();
+
 		showWorkFields();
 	});
 
@@ -326,7 +463,7 @@ $(function () {
 		if($(this).val() == "user" && $("#newUserList").length <= 0){
 			$(this).closest('div').append(domElUser);
 		}else{
-			$(this).closest('div').find("#newUserList").remove();
+			$(this).closest('div').find("#newUserList").popover('destroy').remove(); // kill the popover and remove the input 
 		}
 		e.preventDefault();
 	});
@@ -339,7 +476,7 @@ $(function () {
 			list     = parseInt($(this).val()),
 			contacts = getSortItems();
 		
-		if (contacts.length !== 0) { // if the array is not empty
+		if (contacts.length !== 0 && list !== 0) { // if the array is not empty and user did not select the first option (All)
 			myBook.sortContacts(list, contacts);
 			updateDisplay(list); // Update our view
 		}
@@ -380,7 +517,9 @@ $(function () {
 		e.preventDefault();
 	});
 
-	// Delete list - Buttons interaction
+	////////////////////////////////////////
+	// Delete list - Buttons interaction //
+	////////////////////////////////////////
 	$listWrapper.on('click', '.list-delete', function(e) { 
 
 		listIdToDelete   = $(this).parent().find('.list-link').data("list");
@@ -408,7 +547,13 @@ $(function () {
 		e.preventDefault();
 	});
 
-	updateDisplay(); // Update our view
+	///////////////////////////////////////////////////
+	// Enable single field validation on key press   //
+	// and when changing input values				 //
+	///////////////////////////////////////////////////
+	$form.on('change', $fields, function(e) { 
+		validateField($(e.target));
+	});
 
 	//////////////////
 	// Form submit //
@@ -562,7 +707,6 @@ $(function () {
 		e.preventDefault();
 	});
 
-/////////////////////
-//-- END DOM READY //
-/////////////////////
-});
+	updateDisplay(); // Update our view
+
+}); //-- END DOM READY

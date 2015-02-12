@@ -2,7 +2,7 @@
 // Library Usage Code //
 ////////////////////////
 // TODO: TESTING CODE, REMOVE IT!
-var myContact = new ContactsLib.Contact({
+/*var myContact = new ContactsLib.Contact({
 	id:			  1,
 	listId:		  1,
 	firstName:    'Naor',
@@ -65,7 +65,7 @@ myBook.add(newList);
 myBook.add(newList2);
 //var all = myBook.initContacts();
 
-console.log(myBook);
+console.log(myBook);*/
 
 /* return filtered list
 var filtered = newList.filter(function (contact, index, arrObj) {

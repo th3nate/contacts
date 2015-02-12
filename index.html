@@ -90,7 +90,7 @@
 						<div class="form-group">
 							<p>Move selected to:</p>
 							<div class="input-group">
-								<span class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></span>
 								<select name="listSelect" id="sort-lists" class="form-control input-md group-select" tabindex="1">
 									<option class="static" value="0">All</option>
 								</select>
@@ -99,7 +99,7 @@
 					</div>
 				</div>
 				<p>
-					<a href="#" class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#contact-modal">New Contact &raquo;</a>
+					<a href="#" class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#contact-modal"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> New Contact</a>
 					<!--a href="#" id="get-checked-data" class="btn btn-primary btn-lg" role="button">Get Selected &raquo;</a-->
 				</p>
 			</div>
@@ -257,7 +257,6 @@
 					<div class="modal-body">
 						<form id="contact-form" role="form" method="post">
 
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 							<h2 id="modal-title">Please Add Contact <small>It's free and always will be.</small></h2>
 
 							<hr class="colorgraph">
@@ -265,12 +264,12 @@
 							<div class="row">
 								<div class="col-xs-12 col-sm-6 col-md-6">
 									<div class="form-group">
-										<input type="text" name="firstName" id="first-name" class="form-control input-lg" placeholder="First Name" tabindex="1">
+										<input type="text" name="firstName" id="first-name" class="form-control input-lg validate" placeholder="First Name" tabindex="1">
 									</div>
 								</div>
 								<div class="col-xs-12 col-sm-6 col-md-6">
 									<div class="form-group">
-										<input type="text" name="lastName" id="last-name" class="form-control input-lg" placeholder="Last Name" tabindex="2">
+										<input type="text" name="lastName" id="last-name" class="form-control input-lg validate" placeholder="Last Name" tabindex="2">
 									</div>
 								</div>
 							</div>
@@ -280,7 +279,7 @@
 									<div class="form-group">
 										<div class="input-group">
 											<span class="input-group-addon"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></span>
-											<input type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address" tabindex="3">
+											<input type="email" name="email" id="email" class="form-control input-lg validate" placeholder="Email Address" tabindex="3">
 										</div>
 									</div>
 								</div>
@@ -288,7 +287,7 @@
 									<div class="form-group">
 										<div class="input-group">
 											<span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
-											<input type="text" name="birthDate" id="birth-date" class="form-control input-lg" placeholder="Birth Date" tabindex="4">
+											<input type="text" name="birthDate" id="birth-date" class="form-control input-lg validate" placeholder="Birth Date" tabindex="4">
 										</div>
 									</div>
 								</div>
@@ -299,7 +298,7 @@
 									<div class="form-group">
 										<div class="input-group">
 											<span class="input-group-addon"><span class="glyphicon glyphicon-earphone" aria-hidden="true"></span></span>
-											<input type="text" name="phone" id="phone" class="form-control input-lg" placeholder="Phone" tabindex="5">
+											<input type="text" name="phone" id="phone" class="form-control input-lg validate" placeholder="Phone" tabindex="5">
 										</div>
 									</div>
 								</div>
@@ -307,7 +306,7 @@
 									<div class="form-group">
 										<div class="input-group">
 											<span class="input-group-addon"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span></span>
-											<input type="text" name="workPhone" id="work-phone" class="form-control input-lg" placeholder="Work Phone" tabindex="6">
+											<input type="text" name="workPhone" id="work-phone" class="form-control input-lg validate" placeholder="Work Phone" tabindex="6">
 										</div>
 									</div>
 								</div>
@@ -315,7 +314,7 @@
 									<div class="form-group">
 										<div class="input-group">
 											<span class="input-group-addon"><span class="glyphicon glyphicon-phone" aria-hidden="true"></span></span>
-											<input type="text" name="mobile" id="mobile" class="form-control input-lg" placeholder="Mobile" tabindex="7">
+											<input type="text" name="mobile" id="mobile" class="form-control input-lg validate" placeholder="Mobile" tabindex="7">
 										</div>
 									</div>
 								</div>
@@ -326,7 +325,7 @@
 									<div class="form-group">
 										<div class="input-group">
 											<span class="input-group-addon"><span class="glyphicon glyphicon-link" aria-hidden="true"></span></span>
-											<input type="text" name="imageUrl" id="image-url" class="form-control input-lg" placeholder="Image URL" tabindex="8">
+											<input type="text" name="imageUrl" id="image-url" class="form-control input-lg validate" placeholder="Image URL" tabindex="8">
 										</div>
 									</div>
 								</div>
@@ -346,24 +345,24 @@
 
 							<div class="checkbox">
 								<label>
-									<input type="checkbox" name="isWorkContact" id="is-work-contact" tabindex="11"> Work contact?
+									<input type="checkbox" name="isWorkContact" id="is-work-contact" tabindex="11"> Work contact
 								</label>
 							</div>
 
 							<div class="form-group">
 								<div class="input-group">
-									<span class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
-									<select name="groupAssign" id="group-assign" class="form-control input-lg group-select" tabindex="12">
-										<option class="static" value="">Assaign to group:</option>
-										<option class="static" value="user">Add a new group...</option>
+									<span class="input-group-addon"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></span>
+									<select name="groupAssign" id="group-assign" class="form-control input-lg group-select validate" tabindex="12">
+										<option class="static" value="">Assaign to list:</option>
+										<option class="static" value="user">Add a new list...</option>
 									</select>
 								</div>
 							</div>
 							<hr class="colorgraph">
 
 							<div class="row">
-								<div class="col-xs-12 col-md-6"><input type="submit" value="Apply" class="btn btn-success btn-block btn-lg" tabindex="13"></div>
-								<div class="col-xs-12 col-md-6"><a href="#" class="btn btn-primary btn-block btn-lg" data-dismiss="modal" tabindex="14">Cancel</a></div>
+								<div class="col-xs-12 col-md-8"><input type="submit" class="btn btn-success btn-block btn-lg" tabindex="13" value="Apply" /></div>
+								<div class="col-xs-12 col-md-4"><a href="#" class="btn btn-default btn-block btn-lg" data-dismiss="modal" tabindex="14"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel</a></div>
 							</div>
 
 							<input type="hidden" name="id" id="id" />
@@ -397,8 +396,8 @@
 		<!-- Contacts library -->
 		<script src="js/lib/contacts.js"></script>
 		<!-- Init -->
+		<script src="js/init.js"></script>
 		<script src="js/app-todo.js"></script>
-		<script src="js/scraps.js"></script>
 		<script src="js/app.js"></script>
 
 	</body>

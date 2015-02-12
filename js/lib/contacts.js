@@ -183,7 +183,6 @@ var ContactsLib = (function($) {
 	/**
 	 * [Remove a specific contact by its 'id' property]
 	 * @param  {[Number]} id [...]
-	 * @return {[Contact]}   [Returns the desired contact]
 	 */
 	ContactsBook.prototype.removeContact = function(id){
 		var i,
@@ -524,7 +523,7 @@ var ContactsLib = (function($) {
 		Object.defineProperties(this, {
 			'fullNumber': {
 				get: function() {
-					return prefix + number;
+					return prefix +'-'+ number;
 				}
 			}
 		});
@@ -709,7 +708,6 @@ var ContactsLib = (function($) {
 	ContactsLib.PhoneNumber       = PhoneNumber;
 	ContactsLib.MobilePhoneNumber = MobilePhoneNumber;
 	ContactsLib.ContactsList      = ContactsList;
-	ContactsLib.Validator         = Validator;
 
 	return ContactsLib;
 
