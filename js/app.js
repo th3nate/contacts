@@ -361,7 +361,7 @@ $(function () {// DOM ready
 			obj = parseContact(myBook.getContact(cid));
 
 			if ($form.find('#delete-contact').length <= 0) { // Attach a Delete Button
-				$form.prepend('<button data-delete="'+obj.contact.id+'" id="delete-contact" type="button" class="btn btn-danger pull-right btn-md"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete Contact</button>');
+				$form.find('#modal-buttons').append('<button data-delete="'+obj.contact.id+'" id="delete-contact" type="button" class="btn btn-danger pull-right btn-md"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</button>');
 			}
 			$modalWindow.find('#modal-title').text('Edit: (' + obj.contact.id + ') ' + obj.contact.firstName + ' ' + obj.contact.lastName);
 			

@@ -256,7 +256,7 @@
 				<div class="modal-content">
 					<div class="modal-body">
 						<form id="contact-form" role="form" method="post">
-
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 							<h2 id="modal-title">Please Add Contact <small>It's free and always will be.</small></h2>
 
 							<hr class="colorgraph">
@@ -361,8 +361,10 @@
 							<hr class="colorgraph">
 
 							<div class="row">
-								<div class="col-xs-12 col-md-8"><input type="submit" class="btn btn-success btn-block btn-lg" tabindex="13" value="Apply" /></div>
-								<div class="col-xs-12 col-md-4"><a href="#" class="btn btn-default btn-block btn-lg" data-dismiss="modal" tabindex="14"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel</a></div>
+								<div id="modal-buttons" class="col-xs-12">
+									<input type="submit" class="btn btn-success btn-md" tabindex="13" value="&crarr; Apply" />
+									<a href="#" class="btn btn-default btn-md" data-dismiss="modal" tabindex="14"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel</a>
+								</div>
 							</div>
 
 							<input type="hidden" name="id" id="id" />
