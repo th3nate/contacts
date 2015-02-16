@@ -56,10 +56,10 @@ function buildContactsLists ($elm, book){
 					'class': "list-item label label-primary"
 				}).wrapInner(
 					$('<a>', { 
-						'class':     "list-link",
-						'href':      "#"+val.id,
+						'class':     'list-link',
+						'href':      '#'+val.id,
 						'data-list': val.id,
-						'text':      val.name 
+						'text':      val.name
 					})
 				).prepend('<a href="#" class="list-delete" aria-label="Delete list" role="button" data-toggle="modal" data-target="#modal-delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>\n')
 			);

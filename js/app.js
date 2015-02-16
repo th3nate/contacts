@@ -124,10 +124,22 @@ $(function () {// DOM ready
 		result['facebookPage'] = (formValidation.url($inputFacebookPage.val()) !== true) ? false : true;
 		result['groupAssign']  = ($select.val() === "") ? false : true;
 		
+		//-> START dynamically added fields...
 		if ($form.find('input#newUserList').length > 0) { // if this input exists on form then add it to our validation object
 			formElementsMap['newUserList'].el = $form.find('input#newUserList');
 			result['newUserList'] = ($form.find('input#newUserList').val() === "") ? false : true;
 		}
+
+		if ($form.find('input#position').length > 0) { // if this input exists on form then add it to our validation object
+			formElementsMap['position'].el = $form.find('input#position');
+			result['position'] = ($form.find('input#position').val() === "") ? false : true;
+		}
+
+		if ($form.find('input#color').length > 0) { // if this input exists on form then add it to our validation object
+			formElementsMap['color'].el = $form.find('input#color');
+			result['color'] = ($form.find('input#color').val() === "") ? false : true;
+		}
+		//-> END dynamically added fields...
 
 		$.each(result, function(elm, val) { // loop through our 'result' validation object
 			if (formElementsMap[elm].el.hasClass('validate')) {  // only run on elements that have .validate class
@@ -172,6 +184,7 @@ $(function () {// DOM ready
 			if (formElementsMap[fieldName].el.popover){
 				formElementsMap[fieldName].el.popover('destroy');
 			}
+			
 			if (fieldName === 'phone') {
 				result[fieldName] = (formValidation.phone(field.val()) !== true) ? false : true;
 			}
@@ -192,6 +205,14 @@ $(function () {// DOM ready
 			} 
 			else if (fieldName === 'newUserList') {
 				formElementsMap['newUserList'].el = $form.find('input#newUserList');
+				result[fieldName] = (field.val() === "") ? false : true;
+			} 
+			else if (fieldName === 'position') {
+				formElementsMap['position'].el = $form.find('input#position');
+				result[fieldName] = (field.val() === "") ? false : true;
+			} 
+			else if (fieldName === 'color') {
+				formElementsMap['color'].el = $form.find('input#color');
 				result[fieldName] = (field.val() === "") ? false : true;
 			} 
 			else {	
@@ -443,7 +464,7 @@ $(function () {// DOM ready
 			.removeAttr('checked');
 
 		$select.find("option").removeAttr('selected');
-		$form.find("#newUserList").remove();
+		$form.find("#newUserList, #position, #color").remove();
 
 		showWorkFields();
 	});
