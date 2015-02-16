@@ -148,7 +148,7 @@ $(function () {// DOM ready
 						formElementsMap[elm].el // the field
 						.popover({content: formElementsMap[elm].msg, trigger: 'focus', container: 'body', placement: 'top'}) // enable bootstrap's popover.js
 						.closest('.form-group').addClass('has-error'); // attach an error class
-					}else{ // if a regular input
+					}else { // if a regular input
 						formElementsMap[elm].el // the field
 						.popover({content: formElementsMap[elm].msg, container: 'body', placement: 'top'}) // enable bootstrap's popover.js
 						.closest('.form-group').addClass('has-error'); // attach an error class
@@ -184,7 +184,7 @@ $(function () {// DOM ready
 			if (formElementsMap[fieldName].el.popover){
 				formElementsMap[fieldName].el.popover('destroy');
 			}
-			
+
 			if (fieldName === 'phone') {
 				result[fieldName] = (formValidation.phone(field.val()) !== true) ? false : true;
 			}
@@ -553,7 +553,7 @@ $(function () {// DOM ready
 	// Delete list - Modal on open //
 	//////////////////////////////////
 	$modalDelete.on('show.bs.modal', function (e) { // On modal open
-		$(this).find('.modal-body').html('Are you sure you want to delete <strong>'+listNameToDelete+'</strong>?<br />This will also delete all associated contacts.');
+		$(this).find('.modal-body').html('Are you sure you want to delete <strong>'+listNameToDelete+'</strong>?<br /><small><em>* This will also delete all associated contacts.</em></small>');
 	});
 
 	/////////////////////////////////////////////////////
