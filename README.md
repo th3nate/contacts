@@ -1,2 +1,3 @@
 # contacts
-Contacts Lib for Tutoring
+Contacts Library
+API's coming soon.
