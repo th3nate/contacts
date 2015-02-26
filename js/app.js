@@ -35,7 +35,9 @@ $(function () {// DOM ready
 				<input type="text" name="position" id="position" class="form-control input-lg validate" placeholder="Position" tabindex="12">\
 				<input type="text" name="color" id="color" class="form-control input-lg validate" placeholder="Color" tabindex="12">\
 				',
-		domElUser          = '<input type="text" name="newUserList" id="newUserList" class="form-control input-lg validate" placeholder="Enter list name" tabindex="12" value="">';
+		domElUser          = '\
+				<input type="text" name="newUserList" id="newUserList" class="form-control input-lg validate" placeholder="Enter list name" tabindex="12" value="">\
+				<input type="text" name="newUserListColor" id="newUserListColor" class="form-control input-lg validate" placeholder="Pick a color" tabindex="12" data-toggle="colpick" value="">';
 
 	/////////////////////////////////////////////////
 	// Update the DOM with the current Contact id //
@@ -89,7 +91,11 @@ $(function () {// DOM ready
 		},
 		'newUserList': {
 			el:  '',
-			msg: 'Please enter a name for your new list'
+			msg: 'Please enter a name for your list'
+		},
+		'newUserListColor': {
+			el:  '',
+			msg: 'Please pick a color for your list'
 		},
 		'position': {
 			el:  '',
@@ -128,6 +134,11 @@ $(function () {// DOM ready
 		if ($form.find('input#newUserList').length > 0) { // if this input exists on form then add it to our validation object
 			formElementsMap['newUserList'].el = $form.find('input#newUserList');
 			result['newUserList'] = ($form.find('input#newUserList').val() === "") ? false : true;
+		}
+
+		if ($form.find('input#newUserListColor').length > 0) { // if this input exists on form then add it to our validation object
+			formElementsMap['newUserListColor'].el = $form.find('input#newUserListColor');
+			result['newUserListColor'] = ($form.find('input#newUserListColor').val() === "") ? false : true;
 		}
 
 		if ($form.find('input#position').length > 0) { // if this input exists on form then add it to our validation object
@@ -205,6 +216,10 @@ $(function () {// DOM ready
 			} 
 			else if (fieldName === 'newUserList') {
 				formElementsMap['newUserList'].el = $form.find('input#newUserList');
+				result[fieldName] = (field.val() === "") ? false : true;
+			} 
+			else if (fieldName === 'newUserListColor') {
+				formElementsMap['newUserListColor'].el = $form.find('input#newUserListColor');
 				result[fieldName] = (field.val() === "") ? false : true;
 			} 
 			else if (fieldName === 'position') {
@@ -366,6 +381,24 @@ $(function () {// DOM ready
 		showAnim: "slideDown"
 	});
 
+	////////////////////////
+	// init Color Picker //
+	////////////////////////
+	$('.colpick-holder').on('mousedown', '[data-toggle="colpick"]', function(event) {
+		$(this).colpick({
+			layout:'hex',
+			submit:0,
+			onChange:function(hsb, hex, rgb, el, bySetColor) {
+				//$(el).css('border-color','#'+hex);
+				// Fill the text box just if the color was set using the picker, and not the colpickSetColor function.
+				if(!bySetColor) $(el).val('#'+hex);
+			}
+		}).keyup(function(){
+			$(this).colpickSetColor(this.value);
+		});		
+	});
+
+
 	//////////////////////////////////////////////
 	// Control for modal interaction : Show     //
 	//////////////////////////////////////////////
@@ -464,7 +497,7 @@ $(function () {// DOM ready
 			.removeAttr('checked');
 
 		$select.find("option").removeAttr('selected');
-		$form.find("#newUserList, #position, #color").remove();
+		$form.find("#newUserList, #newUserListColor, #position, #color").remove();
 
 		showWorkFields();
 	});
@@ -484,7 +517,7 @@ $(function () {// DOM ready
 		if($(this).val() == "user" && $("#newUserList").length <= 0){
 			$(this).closest('div').append(domElUser);
 		}else{
-			$(this).closest('div').find("#newUserList").popover('destroy').remove(); // kill the popover and remove the input 
+			$(this).closest('div').find("#newUserList, #newUserListColor").popover('destroy').remove(); // kill the popover and remove the input 
 		}
 		e.preventDefault();
 	});
@@ -649,7 +682,7 @@ $(function () {// DOM ready
 				tmpObjList    = myBook.get(tmpList);
 				
 				if(!tmpObjList){ // if no such list we create it
-					tmpObjList = new ContactsLib.ContactsList(tmpList, [], myBook.getNextListId());
+					tmpObjList = new ContactsLib.ContactsList(tmpList, [], myBook.getNextListId(), tmpObj.newUserListColor);
 					myBook.add(tmpObjList);
 				}
 				
@@ -687,9 +720,9 @@ $(function () {// DOM ready
 				}
 
 				if (myBook.get(list)) { // If list already exists
-					newList = myBook.create(list, [contact]);
+					newList = myBook.create(list, [contact], tmpObj.newUserListColor);
 				} else {
-					newList = new ContactsLib.ContactsList(list, [contact], myBook.getNextListId());
+					newList = new ContactsLib.ContactsList(list, [contact], myBook.getNextListId(), tmpObj.newUserListColor);
 					myBook.add(newList);
 				}
 

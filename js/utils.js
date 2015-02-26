@@ -32,7 +32,7 @@ function buildContactsListsSelect ($select, book){
 /**
  * Build a list out of available 
  * lists in ContactsBook
- * @param  {jQuery} 	$select [the select element to use]
+ * @param  {jQuery} 	$elm 	[the element where to inject the list to]
  * @param  {Singeleton} book    [ContactsBook to search lists in]
  * @return {HTML}         		[Returning the $select element filled with options]
  */
@@ -53,7 +53,8 @@ function buildContactsLists ($elm, book){
 			val    = book.lists[index];
 			doc.append(
 				$('<span>', { 
-					'class': "list-item label label-primary"
+					'class': "list-item white-border label label-primary",
+					'style': "border-bottom: 3px solid "+val.color+";"
 				}).wrapInner(
 					$('<a>', { 
 						'class':     'list-link',
@@ -61,7 +62,10 @@ function buildContactsLists ($elm, book){
 						'data-list': val.id,
 						'text':      val.name
 					})
-				).prepend('<a href="#" class="list-delete" aria-label="Delete list" role="button" data-toggle="modal" data-target="#modal-delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>\n')
+				).prepend('\
+							<a href="#" class="list-delete" aria-label="Delete list" role="button" data-toggle="modal" data-target="#modal-delete">\
+								<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>\
+							</a>\n')
 			);
 			doc.append("\n"); // just for spacing between each item in the list
 		}
@@ -93,10 +97,13 @@ function parseContact(contact){
  */
 function createContactWidget(contact, book){
 	
-	var obj = parseContact(book.getContact(contact.id)),
+	var obj     = parseContact(book.getContact(contact.id)),
+		list    = book.getById(obj.contact.listId),	 // only to get the list's color
+		listObj = book.get(list),					 // only to get the list's color
+		color   = listObj.color,					 // only to get the list's color
 		item    = '\
 		<div class="col-xs-12 col-sm-4 col-md-4 contact-item-wrapper">\
-			<div data-group="'+obj.contact.listId+'" class="thumbnail contact-item relative">\
+			<div data-group="'+obj.contact.listId+'" class="thumbnail contact-item relative" style="border-left: 3px solid '+color+';">\
 				<div class="col-xs-4 col-sm-6 col-md-6">\
 					<img src="'+obj.contact.imageUrl+'" alt="'+obj.contact.firstName+' '+obj.contact.lastName+'" class="img-responsive img-circle" />\
 				</div>\

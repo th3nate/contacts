@@ -298,7 +298,7 @@ var ContactsLib = (function($) {
 				list    = this.lists[listName],
 				oldList = this.get(listName);
 
-			this.create(newName, list.contacts, oldList.id); // creating the new list
+			this.create(newName, list.contacts, oldList.id, this.lists[listName].color); // creating the new list
 			this.delete(listName); // delete the old list itself
 		}
 		return null;
@@ -347,8 +347,8 @@ var ContactsLib = (function($) {
 	 */
 	ContactsBook.prototype.add = function(contactsList, override) {
 		if (!(contactsList instanceof ContactsList)) {
-			console.warn("Can add only ContactsList instances to ContactsBook" + 
-						" List has not been added");
+			console.warn('Can add only ContactsList instances to ContactsBook' + 
+						' List has not been added');
 			return;
 		}
 		override = (override != null) ? !!override : false;
@@ -359,7 +359,7 @@ var ContactsLib = (function($) {
 			for(i = 0; i < len; i++){
 				this.lists[contactsList.name].contacts.push(contactsList.contacts[i]);
 			}
-			console.info("ContactsList already exist, not overriding");
+			console.info('ContactsList already exist, not overriding');
 			return;
 		}
 		this.lists[contactsList.name] = contactsList;
@@ -407,18 +407,21 @@ var ContactsLib = (function($) {
 	 * Given a ContactsList name and Array of Contacts
 	 * we create a New ContactsList, OR - 
 	 * adding Contact to an existing list
-	 * @param  {[ContactsList]} name [pass a ContactsList name]
-	 * @param  {[Array]} 		arr  [pass an array of Contacts]
-	 * @param  {[Number]} 		id   [pass an id of the list (Optional)]
-	 * @return {[ContactsList]}      [Returning a list]
+	 * @param  {[ContactsList]} name 	[pass a ContactsList name]
+	 * @param  {[Array]} 		arr  	[pass an array of Contacts]
+	 * @param  {[Number]} 		id   	[pass an id of the list (Optional)]
+	 * @param  {[String]} 		color   [pass the color of the list (Optional)]
+	 * @return {[ContactsList]}      	[Returning a list]
 	 */
-	ContactsBook.prototype.create = function(name, arr, id) {
-		id = id || this.getNextListId();
+	ContactsBook.prototype.create = function(name, arr, id, color) {
+		id    = id || this.getNextListId();
+		color = color || '#337ab7';
+
 		if (this.get(name) !== null) { // if the list exists
 			this.lists[name].contacts = this.lists[name].contacts.concat(arr); // adding array of contacts (can be array of one) into exsisting array of contacts with Array.concat
-			console.info("List already defined, just adding contact/s.");
+			console.info('List already defined, just adding contact/s.');
 		}else{		
-			this.lists[name] = new ContactsList(name, arr, id);
+			this.lists[name] = new ContactsList(name, arr, id, color);
 		}
 		return this.lists[name];
 	};
@@ -574,10 +577,11 @@ var ContactsLib = (function($) {
 	 * @param {Array} 	contacts 	[Array of Contacts (Optional)]
 	 * @param {Number} 	id      	[The id of the list (Optional)]
 	 */
-	function ContactsList(name, contacts, id) {
-		this.name = name;
+	function ContactsList(name, contacts, id, color) {
+		this.name     = name;
 		this.contacts = (contacts instanceof Array) ? contacts : [];
-        this.id = id || "";
+        this.id       = id || '';
+        this.color    = color || '#337ab7';
 	}
 	
 	/**
