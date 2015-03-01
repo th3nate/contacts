@@ -278,5 +278,9 @@ formValidation = {
 	mobilePhone: function(mobilePhone) {
 		var re = /^(05[0-8]|0[2-489]|077)(?:-*)(\d{7})$/mg;
 		return (typeof mobilePhone === 'string' && re.test(mobilePhone));
+	},
+	hex: function(hex) {
+		var re = /^#(0x|0X)?[a-fA-F0-9]+$/;
+		return (typeof hex === 'string' && re.test(hex));
 	}
 };

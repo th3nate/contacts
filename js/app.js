@@ -95,7 +95,7 @@ $(function () {// DOM ready
 		},
 		'newUserListColor': {
 			el:  '',
-			msg: 'Please pick a color for your list'
+			msg: 'Please pick a valid HEX color for your list'
 		},
 		'position': {
 			el:  '',
@@ -138,7 +138,7 @@ $(function () {// DOM ready
 
 		if ($form.find('input#newUserListColor').length > 0) { // if this input exists on form then add it to our validation object
 			formElementsMap['newUserListColor'].el = $form.find('input#newUserListColor');
-			result['newUserListColor'] = ($form.find('input#newUserListColor').val() === "") ? false : true;
+			result['newUserListColor'] = (formValidation.hex($form.find('input#newUserListColor').val()) !== true) ? false : true;
 		}
 
 		if ($form.find('input#position').length > 0) { // if this input exists on form then add it to our validation object
@@ -220,7 +220,7 @@ $(function () {// DOM ready
 			} 
 			else if (fieldName === 'newUserListColor') {
 				formElementsMap['newUserListColor'].el = $form.find('input#newUserListColor');
-				result[fieldName] = (field.val() === "") ? false : true;
+				result[fieldName] = (formValidation.hex(field.val()) !== true) ? false : true;
 			} 
 			else if (fieldName === 'position') {
 				formElementsMap['position'].el = $form.find('input#position');
@@ -388,14 +388,16 @@ $(function () {// DOM ready
 		$(this).colpick({
 			layout:'hex',
 			submit:0,
+			display: 'bottom',
 			onChange:function(hsb, hex, rgb, el, bySetColor) {
-				//$(el).css('border-color','#'+hex);
-				// Fill the text box just if the color was set using the picker, and not the colpickSetColor function.
-				if(!bySetColor) $(el).val('#'+hex);
+				if(!bySetColor){
+					$(el).val('#'+hex);
+					validateField($(el));	
+				} 
 			}
 		}).keyup(function(){
 			$(this).colpickSetColor(this.value);
-		});		
+		});	
 	});
 
 

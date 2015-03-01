@@ -234,7 +234,10 @@ For usage and examples: colpick.com/plugin
 				var cal = $('#' + $(this).data('colpickId'));
 				cal.data('colpick').onBeforeShow.apply(this, [cal.get(0)]);
 				var pos = $(this).offset();
-				var top = pos.top + this.offsetHeight;
+
+				var top = pos.top - cal.height(); // Display on top
+				//var top = pos.top + this.offsetHeight; // Display on bottom
+				
 				var left = pos.left;
 				var viewPort = getViewport();
 				var calW = cal.width();
