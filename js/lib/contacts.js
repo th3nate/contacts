@@ -292,14 +292,28 @@ var ContactsLib = (function($) {
 	 * @param  {String} newName  [The name of the new list]
 	 * @return {mixed}           [if the list exists return its name, if not return null]
 	 */
-	ContactsBook.prototype.rename = function(listName, newName) {
+	ContactsBook.prototype.rename = function(listName, newName, newColor) {
 		if (this.get(listName)) {
 			var 
 				list    = this.lists[listName],
-				oldList = this.get(listName);
+				oldList = this.get(listName),
+				newColor = newColor || '#337ab7';
 
-			this.create(newName, list.contacts, oldList.id, this.lists[listName].color); // creating the new list
+			this.create(newName, list.contacts, oldList.id, newColor); // creating the new list
 			this.delete(listName); // delete the old list itself
+		}
+		return null;
+	};
+
+	/**
+	 * Update list color
+	 * @param  {String} listName [The name of the list to check]
+	 * @param  {String} color  [The name of the new list]
+	 */
+	ContactsBook.prototype.updateColor = function(listName, color) {
+		if (this.get(listName)) {
+			var list    = this.lists[listName];
+			list.color = color;
 		}
 		return null;
 	};

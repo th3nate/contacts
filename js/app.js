@@ -388,7 +388,6 @@ $(function () {// DOM ready
 		$(this).colpick({
 			layout:'hex',
 			submit:0,
-			display: 'bottom',
 			onChange:function(hsb, hex, rgb, el, bySetColor) {
 				if(!bySetColor){
 					$(el).val('#'+hex);
@@ -545,29 +544,64 @@ $(function () {// DOM ready
 	$listWrapper.on('click', '.list-link', function(e) {
 		var 
 			listId   = $(this).data("list"),
-			orgValue = $(this).text();
+			orgValue = $(this).text(),
+			listName = myBook.getById(listId),
+			listObj  = myBook.get(listName);
 		viewLocation = listId; // Update the current list we're viewing.
-
+		
 		$('a.list-link').parent().removeClass('label-success'); 
 		$(this).parent().addClass('label-success');
 
-		// Init x-editable (for in-place editing of lists names)
-		$(this).not('.no-edit').editable({
-			mode: 'popup',
-			toggle: 'dblclick',
-			type: 'text',
-			title: 'Rename list',
-			validate: function(value) {
-				if($.trim(value) == '') {
-					return 'This field is required';
+		if(listId !== 0){ // if not 'All' button
+			// Init x-editable (for in-place editing of lists names)
+			$(this).not('.no-edit').editable({ //not 'All' button
+				mode: 'popup',
+				toggle: 'dblclick',
+				type: 'text',
+				onblur: 'ignore',
+				title: 'List properties',
+				value: {
+					listName: orgValue, 
+					listColor: listObj.color
+				},			
+				validate: function(value) {
+					if($.trim(value.listName) == '') {
+						return 'Please enter a list name';
+					}
+					if($.trim(value.listColor) == '') {
+						return 'Please pick a list color';
+					}
+					if (formValidation.hex(value.listColor) !== true){
+						return 'Only HEX color accepted';
+					}
+				},
+				success: function(response, newValue) {
+					if(orgValue === newValue.listName) {
+						myBook.updateColor(newValue.listName, newValue.listColor); // update just the list's color
+					}else{
+						myBook.rename(orgValue, newValue.listName, newValue.listColor); // Rename the list
+					}
+					updateDisplay(); // Update our view
+					drawContacts(myBook, viewLocation); // Draw the contacts in the list
+					addCheckboxes(); // Init Styled checkboxes
 				}
-			},
-			success: function(response, newValue) {
-				myBook.rename(orgValue, newValue); // Rename the list
-				updateDisplay(); // Update our view
-			}
-		});		
-
+			}).on('shown', function(e, editable) {
+				$(editable.input.$input[1]).colpick({
+					layout:'hex',
+					submit:0,
+					display: 'bottom',
+					onChange:function(hsb, hex, rgb, el, bySetColor) {
+						if(!bySetColor){
+							$(el).val('#'+hex);
+							validateField($(el));	
+						} 
+					}
+				}).keyup(function(){
+					$(editable.input.$input[1]).colpickSetColor(this.value);
+				});	
+				
+			});		
+		}
 		drawContacts(myBook, viewLocation); // Draw the contacts in the list
 		addCheckboxes(); // Init Styled checkboxes
 		e.preventDefault();

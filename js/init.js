@@ -51,6 +51,6 @@
 	myBook = ContactsLib.ContactsBook.getInstance("My Contacts Book"), // Create a ContactsBook Singleton object
 	newList = new ContactsLib.ContactsList("Friends", [myContact, myContact2, myWorkContact], myBook.getNextListId()); // Create a new Contactslist
 
-//myBook.add(newList); // Add the newly created Contactslist to the ContactsBook
+myBook.add(newList); // Add the newly created Contactslist to the ContactsBook
 
 console.log(myBook); // Log our ContactsBook

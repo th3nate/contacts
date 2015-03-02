@@ -57,6 +57,7 @@ function buildContactsLists ($elm, book){
 					'style': "border-bottom: 3px solid "+val.color+";"
 				}).wrapInner(
 					$('<a>', { 
+						'data-type':  'list',
 						'class':     'list-link',
 						'href':      '#'+val.id,
 						'data-list': val.id,
@@ -280,7 +281,7 @@ formValidation = {
 		return (typeof mobilePhone === 'string' && re.test(mobilePhone));
 	},
 	hex: function(hex) {
-		var re = /^#(0x|0X)?[a-fA-F0-9]+$/;
+		var re = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 		return (typeof hex === 'string' && re.test(hex));
 	}
 };
