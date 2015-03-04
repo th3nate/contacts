@@ -1,0 +1,12 @@
+.editable-list {
+    display: block;
+    margin-bottom: 5px;  
+}
+.editable-list label{
+    color: black;
+    font-weight: normal !important;
+}
+.editable-list span {
+    width: 70px;  
+    display: inline-block;
+}

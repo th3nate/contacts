@@ -22,6 +22,7 @@ For usage and examples: colpick.com/plugin
 				flat: false,
 				layout: 'full',
 				submit: 1,
+				showPosition: 'top',
 				submitText: 'OK',
 				height: 156
 			},
@@ -235,9 +236,12 @@ For usage and examples: colpick.com/plugin
 				cal.data('colpick').onBeforeShow.apply(this, [cal.get(0)]);
 				var pos = $(this).offset();
 
-				var top = pos.top - cal.height(); // Display on top
-				//var top = pos.top + this.offsetHeight; // Display on bottom
-				
+				if(cal.data('colpick').showPosition !== 'bottom'){
+					var top = pos.top - cal.height(); // Display on top
+				}else{
+					var top = pos.top + this.offsetHeight; // Display on bottom
+				}
+
 				var left = pos.left;
 				var viewPort = getViewport();
 				var calW = cal.width();

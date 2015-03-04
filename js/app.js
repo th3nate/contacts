@@ -388,6 +388,7 @@ $(function () {// DOM ready
 		$(this).colpick({
 			layout:'hex',
 			submit:0,
+			showPosition: 'top',
 			onChange:function(hsb, hex, rgb, el, bySetColor) {
 				if(!bySetColor){
 					$(el).val('#'+hex);
@@ -410,6 +411,8 @@ $(function () {// DOM ready
 			cid     	 = button.data('cid'), // Extract info from data-* attributes
 			$modalWindow = $(this);
 
+		$('.editable').editable('hide'); // hide list edit's popover if open
+		
 		$form[0].reset(); // resetting the form before applying data
 
 		if(cid >= 0){ // If we are in Edit mode.
@@ -543,16 +546,19 @@ $(function () {// DOM ready
 	///////////////////////////////
 	$listWrapper.on('click', '.list-link', function(e) {
 		var 
-			listId   = $(this).data("list"),
-			orgValue = $(this).text(),
-			listName = myBook.getById(listId),
-			listObj  = myBook.get(listName);
+			listId    = $(this).data("list"),
+			orgValue  = $(this).text(),
+			listName  = myBook.getById(listId),
+			listObj   = myBook.get(listName),
+			listObjColor;
+
 		viewLocation = listId; // Update the current list we're viewing.
 		
 		$('a.list-link').parent().removeClass('label-success'); 
 		$(this).parent().addClass('label-success');
 
-		if(listId !== 0){ // if not 'All' button
+		if(listId != 0){ // if not 'All' button
+			listObjColor = listObj.color;
 			// Init x-editable (for in-place editing of lists names)
 			$(this).not('.no-edit').editable({ //not 'All' button
 				mode: 'popup',
@@ -586,20 +592,26 @@ $(function () {// DOM ready
 					addCheckboxes(); // Init Styled checkboxes
 				}
 			}).on('shown', function(e, editable) {
+				
+				$(editable.input.$input[1]).colpickSetColor(editable.value.listColor); // show the current color when colpick opens
+				
 				$(editable.input.$input[1]).colpick({
 					layout:'hex',
 					submit:0,
-					display: 'bottom',
+					showPosition: 'bottom',
 					onChange:function(hsb, hex, rgb, el, bySetColor) {
 						if(!bySetColor){
 							$(el).val('#'+hex);
-							validateField($(el));	
+							$('div[data-group="'+listId+'"]').css('border-left','3px solid #'+hex); // live change of contacts left border color according to the colpick
+							validateField($(el)); // validate the HEX field	
 						} 
 					}
 				}).keyup(function(){
 					$(editable.input.$input[1]).colpickSetColor(this.value);
 				});	
 				
+			}).on('hidden', function(e, editable) { // if cancel or not submitted the change (rollback color)
+				$('div[data-group="'+listId+'"]').css('border-left','3px solid '+listObjColor); // live change of contacts left border color according to the colpick
 			});		
 		}
 		drawContacts(myBook, viewLocation); // Draw the contacts in the list
@@ -623,6 +635,7 @@ $(function () {// DOM ready
 	//////////////////////////////////
 	$modalDelete.on('show.bs.modal', function (e) { // On modal open
 		$(this).find('.modal-body').html('Are you sure you want to delete <strong>'+listNameToDelete+'</strong>?<br /><small><em>* This will also delete all associated contacts.</em></small>');
+		$('.editable').editable('hide'); // hide list edit's popover if open
 	});
 
 	/////////////////////////////////////////////////////
