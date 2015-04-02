@@ -430,6 +430,7 @@ $(function () {// DOM ready
 				myBook.removeContact(contactId); // Delete the contact by its id
 				updateDisplay();				// Update our view
 				$modalWindow.modal('hide');			// Close the modal
+				//db(theBook).update({ContactsBook:myBook}); // update db
 				e.preventDefault();
 			});
 
@@ -468,7 +469,7 @@ $(function () {// DOM ready
 				$inputPhone.val(data.results[0].Contact.phone);
 				$inputWorkPhone.val(data.results[0].Contact.workPhone);
 				$inputMobile.val(data.results[0].Contact.mobile);
-				$inputEmail.val(data.results[0].Contact.email);
+				$inputEmail.val(data.results[0].Contact.email.toLowerCase());
 				$inputImageUrl.val(data.results[0].Contact.imageUrl);
 				$inputFacebookPage.val(data.results[0].Contact.facebookPage);
 				$inputComments.val(data.results[0].Contact.comments);
@@ -537,6 +538,7 @@ $(function () {// DOM ready
 		if (contacts.length !== 0 && list !== 0) { // if the array is not empty and user did not select the first option (All)
 			myBook.sortContacts(list, contacts);
 			updateDisplay(list); // Update our view
+			//db(theBook).update({ContactsBook:myBook}); // update db
 		}
 		e.preventDefault();
 	});
@@ -590,6 +592,7 @@ $(function () {// DOM ready
 					updateDisplay(); // Update our view
 					drawContacts(myBook, viewLocation); // Draw the contacts in the list
 					addCheckboxes(); // Init Styled checkboxes
+					//db(theBook).update({ContactsBook:myBook}); // update db
 				}
 			}).on('shown', function(e, editable) {
 				
@@ -616,6 +619,7 @@ $(function () {// DOM ready
 		}
 		drawContacts(myBook, viewLocation); // Draw the contacts in the list
 		addCheckboxes(); // Init Styled checkboxes
+		//db(theBook).update({ContactsBook:myBook}); // update db		
 		e.preventDefault();
 	});
 
@@ -647,6 +651,7 @@ $(function () {// DOM ready
 		updateDisplay(); // Update our view
 		navigation(0); // (Override the above updateDisplay) go to 'All' view
 		$modalDelete.modal('hide');	// Close the modal
+		//db(theBook).update({ContactsBook:myBook}); // update db		
 		e.preventDefault();
 	});
 
@@ -717,7 +722,7 @@ $(function () {// DOM ready
 
         existingContact = myBook.getContact(tmpObj.id);
 
-		v             = validateForm();
+		v = validateForm();
 
 		if (v) { // If passed form input validation
 
@@ -759,6 +764,7 @@ $(function () {// DOM ready
 				}
 
 				drawContacts(myBook, viewLocation);  // Draw the contacts in the list
+				//db(theBook).update({ContactsBook:myBook}); // update db
 
 			}else{ // If it's a new Contact
 				
@@ -790,6 +796,7 @@ $(function () {// DOM ready
 				/////////////////////////////////////////////////////////		
 				arrangeContactsDom(contactElm, $container, $row);
 
+				//db(theBook).update({ContactsBook:myBook}); // update db
 			}
 	        
 			///////////////////////////////////////

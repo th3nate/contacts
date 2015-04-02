@@ -1,6 +1,7 @@
 //////////////////////////
 //-> TODO: TESTING CODE //
 //////////////////////////
+var
 	myContact = new ContactsLib.Contact({ // Create a new Contact
 		id:			  1,
 		listId:		  1,
@@ -42,7 +43,7 @@
 		mobile:       ContactsLib.MobilePhoneNumber.parse('054-7654321'),
 		email:        'david@gmail.com',
 		imageUrl:     'http://api.randomuser.me/portraits/men/42.jpg',
-		comments:     'David is gay',
+		comments:     'David is hilarious',
 		facebookPage: 'http://facebook.com',
 		color:        "Red",
 		position:     "Manager"
@@ -51,6 +52,6 @@
 	myBook = ContactsLib.ContactsBook.getInstance("My Contacts Book"), // Create a ContactsBook Singleton object
 	newList = new ContactsLib.ContactsList("Friends", [myContact, myContact2, myWorkContact], myBook.getNextListId()); // Create a new Contactslist
 
-myBook.add(newList); // Add the newly created Contactslist to the ContactsBook
+//myBook.add(newList); // Add the newly created Contactslist to the ContactsBook
 
 console.log(myBook); // Log our ContactsBook
