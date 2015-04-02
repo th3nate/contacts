@@ -1,0 +1,150 @@
+////////////////////////
+// Library Usage Code //
+////////////////////////
+// TODO: TESTING CODE, REMOVE IT!
+/*var myContact = new ContactsLib.Contact({
+	id:			  1,
+	listId:		  1,
+	firstName:    'Naor',
+	lastName:     'Ami',
+	birthDate:    new Date(1984, 10, 10),
+	phone:        new ContactsLib.PhoneNumber('03', '1234567'),
+	workPhone:    ContactsLib.PhoneNumber.parse('03-7654321'), // another option
+	mobile:       new ContactsLib.MobilePhoneNumber('054', '7654321'),
+	email:        'naoric@gmail.com',
+	imageUrl:     'http://api.randomuser.me/portraits/men/49.jpg',
+	comments:     'nice guy',
+	facebookPage: 'http://facebook.com/naoric'
+});
+var myContact2 = new ContactsLib.Contact({
+	id:			  2,
+	listId:		  1,
+	firstName:    'Mike',
+	lastName:     'James',
+	birthDate:    new Date(1982, 01, 08),
+	phone:        new ContactsLib.PhoneNumber('03', '5554444'),
+	workPhone:    ContactsLib.PhoneNumber.parse('03-9876544'), // another option
+	mobile:       new ContactsLib.MobilePhoneNumber('054', '9999998'),
+	email:        'mike@gmail.com',
+	imageUrl:     'http://api.randomuser.me/portraits/men/97.jpg',
+	comments:     'My description here...',
+	facebookPage: 'http://facebook.com'
+});
+var myWorkContact = new ContactsLib.WorkContact({
+	id:			  3,
+	listId:		  1,
+	firstName:    'David',
+	lastName:     'Peretz',
+	birthDate:    new Date(1988, 04, 07),
+	phone:        new ContactsLib.PhoneNumber('03', '1234567'),
+	workPhone:    ContactsLib.PhoneNumber.parse('03-7654321'), // another option
+	mobile:       ContactsLib.MobilePhoneNumber.parse('054-7654321'),
+	email:        'david@gmail.com',
+	imageUrl:     'http://api.randomuser.me/portraits/men/42.jpg',
+	comments:     'David is gay',
+	facebookPage: 'http://facebook.com',
+	color:        "Red",
+	position:     "Manager"
+});
+
+var rndName = "Some List-" + Math.floor((Math.random() * 100) + 1);
+//console.log(rndName);
+//console.log(myContact.validate());
+//console.log(myContact);
+//console.log(myWorkContact);
+
+var myBook = ContactsLib.ContactsBook.getInstance("My Contacts Book");
+
+var newList = new ContactsLib.ContactsList("Friends", [myContact, myContact2], myBook.getNextListId());
+var newList2 = new ContactsLib.ContactsList("Friends", [myWorkContact], myBook.getNextListId());
+
+//var myBook2 = ContactsLib.ContactsBook.getInstance();
+//console.log(myBook);
+//console.log(myBook.delete("somelist no. 2"));
+myBook.add(newList);
+myBook.add(newList2);
+//var all = myBook.initContacts();
+
+console.log(myBook);*/
+
+/* return filtered list
+var filtered = newList.filter(function (contact, index, arrObj) {
+	return contact.firstName.charAt(0).toLowerCase() !== 'n'
+});
+console.info(filtered);
+*/
+/* example of find method
+var who = newList.find(1);
+console.log(who);
+*/
+/* example of findBy method
+var findByName = newList.findBy(function (contact, index, arrObj) {
+	return contact.firstName.toLowerCase() == 'mike'
+});
+console.info(findByName);
+*/
+/* example of removeBy method
+var removeByName = newList.removeBy(function (contact, index, arrObj) {
+	return contact.firstName.toLowerCase() == 'mike'
+});
+console.info(removeByName);
+*/
+
+/*var myBook = ContactsLib.ContactsBook.getInstance("My Contacts Book"); // Create a ContactsBook Singleton object
+if(localStorage.getItem('isTaffy') != true){
+	var db = localStorage.getItem('taffy_db');
+	var theBook = myBook;	
+	console.log(theBook);
+}else{
+	// Create a new database a single object (first record)
+	var db = TAFFY({record:1, ContactsBook:myBook});
+		localStorage.setItem('isTaffy', true);
+	// the first record in the db
+	var theBook = db().first().ContactsBook;	
+}
+*/
+
+/*if(!theBook instanceof ContactsLib.ContactsBook){
+
+}*/
+
+/*
+// Open IndexedDB to store our PhoneBook Instance
+var phoneBookExists;
+if(!phoneBookExists){
+	var db = new Dexie("ContactsDB");
+	db.version(1).stores({book: "id,&ContactsBook"});
+	db.open();
+	db.transaction("rw", db.book, function() {
+		// Any database error event that occur will abort transaction and be sent to
+		// the catch() method below.
+		// The exact same rule if any exception is thrown whatsoever.
+		db.book.clear();
+		db.book.put({
+			id : 1, 
+			ContactsBook : myBook
+		}).then(function (asd) {
+			console.log("ContactsBook Added Successfully");
+		});
+		db.book.get(1).then(function(obj) {
+			var theBook = obj.ContactsBook;
+			if(theBook instanceof ContactsLib.ContactsBook){
+				phoneBookExists = true;
+				console.log("ContactsBook: " + theBook instanceof ContactsLib.ContactsBook);
+			}
+		});
+	}).catch(function (error) {
+		// Log or display the error
+		console.log("Ooops: " + error);
+	});
+}*/
+
+/*
+// Put the object into storage
+localStorage.setItem('book', JSON.stringify(myBook));
+
+if(localStorage.book) { // if the book is stored
+	// Retrieve the object from storage
+	var retrievedObject = localStorage.getItem('book');
+	console.log('retrievedObject: ', JSON.parse(retrievedObject));	
+}*/
