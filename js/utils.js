@@ -258,6 +258,76 @@ function navigation (listId) {
 		.addClass('label-success');
 }
 
+/**
+ * [dbStore description]
+ * @param  {[type]} book [description]
+ * @return {[type]}      [description]
+ */
+function dbStore (book){
+
+	// Put the object into storage
+	localStorage.setItem('book', JSON.stringify(book));
+	console.log(book, 'Stored Succesfully!');	
+}
+
+/**
+ * [dbFetch description]
+ * @param  {[type]} book [description]
+ * @return {[type]}      [description]
+ */
+function dbFetch (book){
+
+	if(localStorage.book) { // if the book is stored
+		// Retrieve the object from storage
+		var retrievedObject = localStorage.getItem('book');
+		console.log('retrievedObject: ', JSON.parse(retrievedObject));
+		
+		return JSON.parse(retrievedObject);	
+	}else{
+		return false;
+	}	
+}
+
+function dbRestore (obj){
+
+	var i,
+		obj      = (typeof obj == 'object') ? obj : JSON.parse(obj),
+		bookName = obj.name,
+		book     = ContactsLib.ContactsBook.getInstance(bookName), // Create a ContactsBook Singleton object
+		lists    = obj.lists,
+		listsLen = Object.keys(lists).length;
+
+	// Create lists
+	for (var i = 0, len = listsLen; i < len; i++){
+		var 
+			curListName = Object.keys(lists)[i],
+			curList     = lists[curListName],
+			newList     = new ContactsLib.ContactsList(curList.name, [], curList.id, curList.color);
+			
+		book.add(newList); // add the new list to the book
+		
+		// Create contacts
+		for (var j = 0, len2 = curList.contacts.length; j < len2; j++){
+			var 
+				contact           = curList.contacts[j],
+				isWorkContact     = contact.isWorkContact;
+				
+			// contact.phone     = curList.contacts[j].phone.fullNumber;
+			// contact.workPhone = curList.contacts[j].workPhone.fullNumber;
+			// contact.mobile    = curList.contacts[j].mobile.fullNumber;
+
+			if (!isWorkContact) {
+				newContact = new ContactsLib.Contact(contact);
+			} else {
+				newContact = new ContactsLib.WorkContact(contact);
+			}
+			newList.add(newContact);
+		}
+	}
+	console.log('buildStore (obj) : ', book);
+	return book;
+}
+
 // Validator object
 formValidation = {
 	email: function(email) {

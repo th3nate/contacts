@@ -764,6 +764,7 @@ $(function () {// DOM ready
 				}
 
 				drawContacts(myBook, viewLocation);  // Draw the contacts in the list
+				dbStore(myBook);
 				//db(theBook).update({ContactsBook:myBook}); // update db
 
 			}else{ // If it's a new Contact
@@ -795,7 +796,7 @@ $(function () {// DOM ready
 				// Append the newly created contactElm to the DOM      //
 				/////////////////////////////////////////////////////////		
 				arrangeContactsDom(contactElm, $container, $row);
-
+				dbStore(myBook);
 				//db(theBook).update({ContactsBook:myBook}); // update db
 			}
 	        
