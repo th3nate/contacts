@@ -312,15 +312,17 @@ function dbRestore (obj){
 				contact           = curList.contacts[j],
 				isWorkContact     = contact.isWorkContact;
 				
-			// contact.phone     = curList.contacts[j].phone.fullNumber;
-			// contact.workPhone = curList.contacts[j].workPhone.fullNumber;
-			// contact.mobile    = curList.contacts[j].mobile.fullNumber;
-
 			if (!isWorkContact) {
 				newContact = new ContactsLib.Contact(contact);
 			} else {
 				newContact = new ContactsLib.WorkContact(contact);
 			}
+			
+			// Create Contact's Phone numbers
+			newContact.phone     = new ContactsLib.PhoneNumber(contact.phone.prefix, contact.phone.number);
+			newContact.workPhone = new ContactsLib.PhoneNumber(contact.workPhone.prefix, contact.workPhone.number);
+			newContact.mobile    = new ContactsLib.MobilePhoneNumber(contact.mobile.prefix, contact.mobile.number);
+
 			newList.add(newContact);
 		}
 	}

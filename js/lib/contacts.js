@@ -459,16 +459,6 @@ var ContactsLib = (function($) {
 			obj.mobile = ContactsLib.MobilePhoneNumber.parse(data.mobile);
 		}
 
-		if(typeof obj.phone === 'object'){ // if phone number is a string and not a New Number then make it one.
-			obj.phone = new PhoneNumber(data.phone.prefix, data.phone.number);
-		}
-		if(typeof obj.workPhone === 'object'){ // if workPhone number is a string and not a New Number then make it one.
-			obj.workPhone = new PhoneNumber(data.workPhone.prefix, data.workPhone.number);
-		}
-		if(typeof obj.mobile === 'object'){ // if mobile number is a string and not a New Number then make it one.
-			obj.mobile = new MobilePhoneNumber(data.mobile.prefix, data.mobile.number);
-		}
-
 		_props(this, obj);
 	}
 
@@ -518,16 +508,6 @@ var ContactsLib = (function($) {
 		}
 		if(typeof obj.mobile === 'string'){ // if mobile number is a string and not a New Number then make it one.
 			obj.mobile = ContactsLib.MobilePhoneNumber.parse(data.mobile);
-		}
-
-		if(typeof obj.phone === 'object'){ // if phone number is a string and not a New Number then make it one.
-			obj.phone = new PhoneNumber(data.phone.prefix, data.phone.number);
-		}
-		if(typeof obj.workPhone === 'object'){ // if workPhone number is a string and not a New Number then make it one.
-			obj.workPhone = new PhoneNumber(data.workPhone.prefix, data.workPhone.number);
-		}
-		if(typeof obj.mobile === 'object'){ // if mobile number is a string and not a New Number then make it one.
-			obj.mobile = new MobilePhoneNumber(data.mobile.prefix, data.mobile.number);
 		}
 
 		Contact.call(this, data);
