@@ -427,10 +427,10 @@ $(function () {// DOM ready
 			$('button').on('click',$('[attr=data-delete'), function(e) {
 				var contactId = parseInt($(e.target).attr('data-delete'));
 				
-				myBook.removeContact(contactId); // Delete the contact by its id
+				myBook.removeContact(contactId);// Delete the contact by its id
 				updateDisplay();				// Update our view
-				$modalWindow.modal('hide');			// Close the modal
-				//db(theBook).update({ContactsBook:myBook}); // update db
+				$modalWindow.modal('hide');		// Close the modal
+				dbStore(myBook); 				// update db
 				e.preventDefault();
 			});
 
@@ -538,7 +538,7 @@ $(function () {// DOM ready
 		if (contacts.length !== 0 && list !== 0) { // if the array is not empty and user did not select the first option (All)
 			myBook.sortContacts(list, contacts);
 			updateDisplay(list); // Update our view
-			//db(theBook).update({ContactsBook:myBook}); // update db
+			dbStore(myBook); // update db
 		}
 		e.preventDefault();
 	});
@@ -592,7 +592,7 @@ $(function () {// DOM ready
 					updateDisplay(); // Update our view
 					drawContacts(myBook, viewLocation); // Draw the contacts in the list
 					addCheckboxes(); // Init Styled checkboxes
-					//db(theBook).update({ContactsBook:myBook}); // update db
+					dbStore(myBook); // update db
 				}
 			}).on('shown', function(e, editable) {
 				
@@ -619,7 +619,6 @@ $(function () {// DOM ready
 		}
 		drawContacts(myBook, viewLocation); // Draw the contacts in the list
 		addCheckboxes(); // Init Styled checkboxes
-		//db(theBook).update({ContactsBook:myBook}); // update db		
 		e.preventDefault();
 	});
 
@@ -651,7 +650,7 @@ $(function () {// DOM ready
 		updateDisplay(); // Update our view
 		navigation(0); // (Override the above updateDisplay) go to 'All' view
 		$modalDelete.modal('hide');	// Close the modal
-		//db(theBook).update({ContactsBook:myBook}); // update db		
+		dbStore(myBook); // update db
 		e.preventDefault();
 	});
 
@@ -764,8 +763,7 @@ $(function () {// DOM ready
 				}
 
 				drawContacts(myBook, viewLocation);  // Draw the contacts in the list
-				dbStore(myBook);
-				//db(theBook).update({ContactsBook:myBook}); // update db
+				dbStore(myBook); // update db
 
 			}else{ // If it's a new Contact
 				
@@ -796,8 +794,7 @@ $(function () {// DOM ready
 				// Append the newly created contactElm to the DOM      //
 				/////////////////////////////////////////////////////////		
 				arrangeContactsDom(contactElm, $container, $row);
-				dbStore(myBook);
-				//db(theBook).update({ContactsBook:myBook}); // update db
+				dbStore(myBook); // update db
 			}
 	        
 			///////////////////////////////////////
